@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import Badge from "./Badge";
@@ -9,8 +9,8 @@ type Props = {
   pfpUri?: string;
   location?: string;
   time?: string;
-  distance?: string;
-  timeTogether?: string;
+  distance?: number;
+  timeTogether?: number;
   interests?: string[];
   mutualFriendsCount?: number;
 };
@@ -27,61 +27,75 @@ export default function UserCard({
 }: Props) {
   return (
     <View style={styles.container}>
-      <View style={styles.top}>
-        <View style={styles.pfpContainer}>
-          {/* <Image source={pfpUri} /> */}
+      <View style={styles.innerBounds}>
+        <View style={styles.top}>
+          <View style={styles.pfpContainer}>
+            {/* <Image source={pfpUri} /> */}
+          </View>
+          <View style={styles.topTextContainer}>
+            <View style={styles.nameAndMutualsContainer}>
+              <Text style={styles.name} numberOfLines={1}>
+                {name}
+              </Text>
+              {mutualFriendsCount ? (
+                <Badge backgroundColor="#dbeafe" textColor="#1d4ed8">
+                  {mutualFriendsCount} mutual friend
+                  {mutualFriendsCount > 1 && "s"} 💫
+                </Badge>
+              ) : null}
+            </View>
+            {location ? (
+              <View style={styles.locationWrapper}>
+                <Ionicons name="location-outline" size={18} color="#d97706" />
+                <Text style={styles.locationText} numberOfLines={1}>
+                  {location}
+                </Text>
+              </View>
+            ) : null}
+          </View>
         </View>
-        <View style={styles.topTextContainer}>
-          <View style={styles.nameAndMutualsContainer}>
-            <Text style={styles.name} numberOfLines={1}>
-              {name}
-            </Text>
-            {mutualFriendsCount && (
-              <Badge backgroundColor="#dbeafe" textColor="#1d4ed8">
-                {mutualFriendsCount} mutual friend
-                {mutualFriendsCount > 1 && "s"} 💫
+        <View style={styles.statsRow}>
+          {time ? (
+            <View style={styles.statItem}>
+              <Ionicons name="time-outline" size={18} color="#d97706" />
+              <Text>{time}</Text>
+            </View>
+          ) : null}
+          {distance ? (
+            <View style={styles.statItem}>
+              <Ionicons name="location-outline" size={18} color="#d97706" />
+              <Text>{distance} ft away</Text>
+            </View>
+          ) : null}
+          {timeTogether ? (
+            <View style={styles.statItem}>
+              <Ionicons name="hourglass-outline" size={18} color="#d97706" />
+              <Text>{timeTogether} min together</Text>
+            </View>
+          ) : null}
+        </View>
+        {interests && interests.length > 0 ? (
+          <FlatList
+            data={interests}
+            renderItem={({ item }) => (
+              <Badge backgroundColor="#f3e8ff" textColor="#7e22ce">
+                {item}
               </Badge>
             )}
-          </View>
-          {location && (
-            <View style={styles.locationWrapper}>
-              <Ionicons name="location-outline" size={18} color="#d97706" />
-              <Text style={styles.locationText} numberOfLines={1}>
-                {location}
-              </Text>
-            </View>
-          )}
+            horizontal
+            style={{ overflow: "visible" }}
+            contentContainerStyle={styles.interests}
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : null}
+        <View style={styles.actions}>
+          <Button variant="primary" icon="hand-left-outline">
+            Wave
+          </Button>
+          <Button variant="secondary" icon="chatbubble-outline">
+            Chat
+          </Button>
         </View>
-      </View>
-      <View style={styles.statsRow}>
-        <View style={styles.statItem}>
-          <Ionicons name="time-outline" size={18} color="#d97706" />
-          <Text>9:15 AM</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Ionicons name="location-outline" size={18} color="#d97706" />
-          <Text>2 ft away</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Ionicons name="hourglass-outline" size={18} color="#d97706" />
-          <Text>12 min together</Text>
-        </View>
-      </View>
-      <View style={styles.interests}>
-        <Badge backgroundColor="#f3e8ff" textColor="#7e22ce">
-          Photography
-        </Badge>
-        <Badge backgroundColor="#f3e8ff" textColor="#7e22ce">
-          Coffee
-        </Badge>
-      </View>
-      <View style={styles.actions}>
-        <Button variant="primary" icon="hand-left-outline">
-          Wave
-        </Button>
-        <Button variant="secondary" icon="chatbubble-outline">
-          Chat
-        </Button>
       </View>
     </View>
   );
@@ -89,7 +103,6 @@ export default function UserCard({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
     backgroundColor: "white",
     borderRadius: 20,
     shadowOffset: {
@@ -99,7 +112,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4.65,
     elevation: 8,
+  },
+  innerBounds: {
+    padding: 16,
     gap: 10,
+    overflow: "hidden",
   },
   top: {
     flexDirection: "row",

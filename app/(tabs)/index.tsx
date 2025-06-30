@@ -1,7 +1,7 @@
 import {
+  FlatList,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  ScrollView,
   StyleSheet,
   View,
 } from "react-native";
@@ -9,6 +9,9 @@ import { useSharedValue } from "react-native-reanimated";
 
 import Overview, { BASE_OVERVIEW_HEIGHT } from "@/components/Overview";
 import UserCard from "@/components/UserCard";
+import { getRandomUsers } from "@/placeholder/users";
+
+const users = getRandomUsers(5);
 
 export default function Index() {
   const scrollOffset = useSharedValue(0);
@@ -20,35 +23,23 @@ export default function Index() {
   return (
     <View style={styles.container}>
       <Overview scrollOffset={scrollOffset} />
-      <ScrollView style={styles.scrollContainer} onScroll={onScroll}>
-        <View style={styles.profileList}>
+      <FlatList
+        data={users}
+        renderItem={({ item }) => (
           <UserCard
-            name="Sarah Chen"
-            location="Blue Bottle Coffee"
-            mutualFriendsCount={3}
+            name={item.name}
+            location={item.location}
+            mutualFriendsCount={item.mutualFriends}
+            time={item.timeMet}
+            distance={item.distance}
+            timeTogether={item.timeTogether}
+            interests={item.interests}
           />
-          <UserCard
-            name="Sarah Chen"
-            location="Blue Bottle Coffee"
-            mutualFriendsCount={3}
-          />
-          <UserCard
-            name="Sarah Chen"
-            location="Blue Bottle Coffee"
-            mutualFriendsCount={3}
-          />
-          <UserCard
-            name="Sarah Chen"
-            location="Blue Bottle Coffee"
-            mutualFriendsCount={3}
-          />
-          <UserCard
-            name="Sarah Chen"
-            location="Blue Bottle Coffee"
-            mutualFriendsCount={3}
-          />
-        </View>
-      </ScrollView>
+        )}
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.profileList}
+        onScroll={onScroll}
+      />
     </View>
   );
 }
