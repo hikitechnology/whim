@@ -1,8 +1,9 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import Badge from "./Badge";
 import Button from "./Button";
+import Card from "./Card";
 
 type Props = {
   name: string;
@@ -13,6 +14,7 @@ type Props = {
   timeTogether?: number;
   interests?: string[];
   mutualFriendsCount?: number;
+  onPress?: () => void;
 };
 
 export default function UserCard({
@@ -24,10 +26,11 @@ export default function UserCard({
   timeTogether,
   interests,
   mutualFriendsCount,
+  onPress,
 }: Props) {
   return (
-    <View style={styles.container}>
-      <View style={styles.innerBounds}>
+    <Pressable onPress={onPress}>
+      <Card innerStyle={styles.innerBounds}>
         <View style={styles.top}>
           <View style={styles.pfpContainer}>
             {/* <Image source={pfpUri} /> */}
@@ -86,6 +89,7 @@ export default function UserCard({
             style={{ overflow: "visible" }}
             contentContainerStyle={styles.interests}
             showsHorizontalScrollIndicator={false}
+            onStartShouldSetResponder={() => true}
           />
         ) : null}
         <View style={styles.actions}>
@@ -96,23 +100,12 @@ export default function UserCard({
             Chat
           </Button>
         </View>
-      </View>
-    </View>
+      </Card>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4.65,
-    elevation: 8,
-  },
   innerBounds: {
     padding: 16,
     gap: 10,

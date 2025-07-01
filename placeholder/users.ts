@@ -1,5 +1,6 @@
 export const allUsers = [
   {
+    id: 1,
     name: "Alex Carter",
     location: "Brooklyn, NY",
     bio: "Chasing sunsets and good vibes 📸",
@@ -13,8 +14,8 @@ export const allUsers = [
       },
     ],
     favorites: [
-      { category: "book", favorite: "The Alchemist" },
-      { category: "song", favorite: "Bohemian Rhapsody" },
+      { category: "Book", favorite: "The Alchemist" },
+      { category: "Song", favorite: "Bohemian Rhapsody" },
     ],
     lookingFor: "Someone who loves exploring new places and sharing stories",
     conversationStarters: [
@@ -29,14 +30,15 @@ export const allUsers = [
     timeTogether: 25,
   },
   {
+    id: 2,
     name: "Sofia Mendes",
     location: "Austin, TX",
     bio: "Music enthusiast and taco connoisseur 🌮🎶",
     interests: ["Live Music", "Cooking", "Yoga"],
     favorites: [
-      { category: "food", favorite: "Breakfast tacos" },
-      { category: "song", favorite: "Texas Sun" },
-      { category: "movie", favorite: "Before Sunrise" },
+      { category: "Food", favorite: "Breakfast tacos" },
+      { category: "Song", favorite: "Texas Sun" },
+      { category: "Movie", favorite: "Before Sunrise" },
     ],
     conversationStarters: [
       "What's the best concert you've been to?",
@@ -48,6 +50,7 @@ export const allUsers = [
     timeTogether: 12,
   },
   {
+    id: 3,
     name: "Liam Zhang",
     location: "San Francisco, CA",
     bio: "Tech geek by day, stargazer by night ✨",
@@ -66,6 +69,7 @@ export const allUsers = [
     timeTogether: 48,
   },
   {
+    id: 4,
     name: "Maya Patel",
     location: "Chicago, IL",
     bio: "Art lover and city explorer 🎨🏙️",
@@ -82,14 +86,15 @@ export const allUsers = [
     timeTogether: 33,
   },
   {
+    id: 5,
     name: "Ethan Brooks",
     location: "Seattle, WA",
     bio: "Craft beer enthusiast and dog dad 🐶🍺",
     numPictures: 12,
     interests: ["Brewing", "Hiking", "Dog Training", "Camping"],
     favorites: [
-      { category: "drink", favorite: "IPA" },
-      { category: "book", favorite: "Dune" },
+      { category: "Drink", favorite: "IPA" },
+      { category: "Book", favorite: "Dune" },
     ],
     lookingFor: "Someone to share a pint and a trail with",
     favoriteLocations: ["Fremont Brewing", "Discovery Park"],
@@ -99,6 +104,7 @@ export const allUsers = [
     timeTogether: 55,
   },
   {
+    id: 6,
     name: "Luna Garcia",
     location: "Miami, FL",
     bio: "Dancing through life with a Latin beat 💃",
@@ -116,15 +122,16 @@ export const allUsers = [
     timeTogether: 40,
   },
   {
+    id: 7,
     name: "Noah Kim",
     location: "Portland, OR",
     bio: "Food trucks and forest trails 🌲🍔",
     numPictures: 1,
     interests: ["Camping", "Street Food", "Photography"],
     favorites: [
-      { category: "food", favorite: "Kimchi fries" },
-      { category: "song", favorite: "Harvest Moon" },
-      { category: "book", favorite: "Wild" },
+      { category: "Food", favorite: "Kimchi fries" },
+      { category: "Song", favorite: "Harvest Moon" },
+      { category: "Book", favorite: "Wild" },
     ],
     favoriteLocations: ["Forest Park", "Pine State Biscuits"],
     mutualFriends: 3,
@@ -133,6 +140,7 @@ export const allUsers = [
     timeTogether: 18,
   },
   {
+    id: 8,
     name: "Ava Nguyen",
     location: "Boston, MA",
     bio: "Bookworm and history buff 📚🏛️",
@@ -149,6 +157,7 @@ export const allUsers = [
     timeTogether: 29,
   },
   {
+    id: 9,
     name: "Omar Saleh",
     location: "Denver, CO",
     bio: "Mountain climber and coffee addict ☕🏔️",
@@ -162,7 +171,7 @@ export const allUsers = [
       "Mountain Biking",
       "Craft Beer",
     ],
-    favorites: [{ category: "drink", favorite: "Cortado" }],
+    favorites: [{ category: "Drink", favorite: "Cortado" }],
     lookingFor: "An adventure buddy for the trails",
     favoriteLocations: ["Red Rocks Park", "Little Owl Coffee"],
     mutualFriends: 0,
@@ -171,6 +180,7 @@ export const allUsers = [
     timeTogether: 44,
   },
   {
+    id: 10,
     name: "Zoe Harper",
     location: "Los Angeles, CA",
     bio: "Dreamer, writer, and beach bum 🌊✍️",
@@ -205,4 +215,8 @@ export function getRandomUser() {
 
 export function getRandomUsers(count: number) {
   return [...allUsers].sort(() => Math.random() - 0.5).slice(0, count);
+}
+
+export function getUserById(id: number) {
+  return allUsers.find((user) => user.id === id);
 }

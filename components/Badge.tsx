@@ -1,29 +1,65 @@
 import { PropsWithChildren } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 type Props = PropsWithChildren<{
+  variant?: "small" | "large";
   backgroundColor: string;
   textColor: string;
+  onPress?: () => void;
 }>;
 
-export default function Badge({ backgroundColor, textColor, children }: Props) {
+export default function Badge({
+  variant = "small",
+  backgroundColor,
+  textColor,
+  onPress,
+  children,
+}: Props) {
+  let variantStyles;
+  if (variant === "small") {
+    variantStyles = StyleSheet.create({
+      container: {
+        paddingHorizontal: 8,
+        height: 24,
+      },
+      text: {
+        fontSize: 14,
+      },
+    });
+  } else {
+    variantStyles = StyleSheet.create({
+      container: {
+        paddingHorizontal: 12,
+        height: 30,
+      },
+      text: {
+        fontSize: 18,
+      },
+    });
+  }
+
   return (
-    <View style={[styles.container, { backgroundColor }]}>
+    <TouchableOpacity
+      style={[styles.container, variantStyles.container, { backgroundColor }]}
+      onPress={onPress}
+    >
       <Text
-        style={{
-          color: textColor,
-        }}
+        style={[
+          variantStyles.text,
+          {
+            color: textColor,
+          },
+        ]}
       >
         {children}
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
-    paddingHorizontal: 8,
     borderRadius: 999,
   },
 });
