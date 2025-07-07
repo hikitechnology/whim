@@ -22,7 +22,8 @@ export default function HomeLayout() {
         name="index"
         options={{ title: "Home", headerShown: false }}
       />
-      <Stack.Screen name="user/[id]" options={{ title: "Profile" }} />
+      <Stack.Screen name="user/[id]/index" options={{ title: "Profile" }} />
+      <Stack.Screen name="user/[id]/edit" options={{ title: "Edit Profile" }} />
     </Stack>
   );
 }

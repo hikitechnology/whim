@@ -4,7 +4,6 @@ import { useLocalSearchParams } from "expo-router";
 import Card from "@/components/Card";
 import {
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -14,6 +13,9 @@ import Button from "@/components/Button";
 import Badge from "@/components/Badge";
 import IconText from "@/components/IconText";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { navigate } from "expo-router/build/global-state/routing";
+import PageBackground from "@/components/PageBackground";
+import CardHeader from "@/components/CardHeader";
 
 export default function UserProfile() {
   const params = useLocalSearchParams<{ id: string }>();
@@ -24,11 +26,9 @@ export default function UserProfile() {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.innerContainer}
-    >
-      <Card innerStyle={styles.card}>
+    <PageBackground>
+      <Button onPress={() => navigate(`./${params.id}/edit`)}>edit</Button>
+      <Card>
         {user.mutualFriends > 0 ? (
           <View style={styles.badge}>
             <Badge
@@ -61,14 +61,8 @@ export default function UserProfile() {
         </View>
       </Card>
       {user.numPictures && user.numPictures > 0 ? (
-        <Card innerStyle={[styles.card]}>
-          <IconText
-            icon="camera-outline"
-            iconColor="#d97706"
-            style={styles.cardHeader}
-          >
-            My Pics
-          </IconText>
+        <Card>
+          <CardHeader icon="camera-outline">My Pics</CardHeader>
           <FlatList
             data={new Array(user.numPictures)}
             renderItem={() => <View style={styles.pic} />}
@@ -80,14 +74,8 @@ export default function UserProfile() {
         </Card>
       ) : null}
       {user.interests && user.interests.length > 0 ? (
-        <Card innerStyle={[styles.card]}>
-          <IconText
-            icon="star-outline"
-            iconColor="#d97706"
-            style={styles.cardHeader}
-          >
-            Things I Love
-          </IconText>
+        <Card>
+          <CardHeader icon="star-outline">Things I Love</CardHeader>
           <View style={styles.interests}>
             {user.interests.map((item, index) => (
               <Badge
@@ -103,14 +91,8 @@ export default function UserProfile() {
         </Card>
       ) : null}
       {user.traits && user.traits.length > 0 ? (
-        <Card innerStyle={[styles.card]}>
-          <IconText
-            icon="sparkles-outline"
-            iconColor="#d97706"
-            style={styles.cardHeader}
-          >
-            My Vibe
-          </IconText>
+        <Card>
+          <CardHeader icon="sparkles-outline">My Vibe</CardHeader>
           <View style={styles.blurbsList}>
             {user.traits.map((item, index) => (
               <View
@@ -129,14 +111,8 @@ export default function UserProfile() {
         </Card>
       ) : null}
       {user.favorites && user.favorites.length > 0 ? (
-        <Card innerStyle={styles.card}>
-          <IconText
-            icon="heart-outline"
-            iconColor="#d97706"
-            style={styles.cardHeader}
-          >
-            Current Favorites
-          </IconText>
+        <Card>
+          <CardHeader icon="heart-outline">Current Favorites</CardHeader>
           <View style={styles.blurbsList}>
             {user.favorites.map((item, index) => {
               // random icons/colors for now
@@ -176,26 +152,16 @@ export default function UserProfile() {
         </Card>
       ) : null}
       {user.lookingFor ? (
-        <Card innerStyle={styles.card}>
-          <IconText
-            icon="search-outline"
-            iconColor="#d97706"
-            style={styles.cardHeader}
-          >
-            Looking For
-          </IconText>
+        <Card>
+          <CardHeader icon="search-outline">Looking For</CardHeader>
           <Text style={styles.cardText}>{user.lookingFor}</Text>
         </Card>
       ) : null}
       {user.conversationStarters && user.conversationStarters.length > 0 ? (
-        <Card innerStyle={styles.card}>
-          <IconText
-            icon="chatbubble-outline"
-            iconColor="#d97706"
-            style={styles.cardHeader}
-          >
+        <Card>
+          <CardHeader icon="chatbubble-outline">
             Let&apos;s Talk About...
-          </IconText>
+          </CardHeader>
           <View style={styles.blurbsList}>
             {user.conversationStarters.map((item, index) => (
               <TouchableOpacity key={index}>
@@ -212,14 +178,10 @@ export default function UserProfile() {
         </Card>
       ) : null}
       {user.favoriteLocations && user.favoriteLocations.length > 0 ? (
-        <Card innerStyle={styles.card}>
-          <IconText
-            icon="compass-outline"
-            iconColor="#d97706"
-            style={styles.cardHeader}
-          >
+        <Card>
+          <CardHeader icon="compass-outline">
             You Might Find Me At...
-          </IconText>
+          </CardHeader>
           <View style={styles.interests}>
             {user.favoriteLocations.map((item, index) => (
               <Badge
@@ -234,22 +196,11 @@ export default function UserProfile() {
           </View>
         </Card>
       ) : null}
-    </ScrollView>
+    </PageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#fffbeb",
-  },
-  innerContainer: {
-    padding: 16,
-    gap: 16,
-  },
-  card: {
-    padding: 16,
-    gap: 14,
-  },
   userOverview: {
     gap: 6,
     alignItems: "center",
@@ -262,7 +213,7 @@ const styles = StyleSheet.create({
   },
   interactions: {
     flexDirection: "row",
-    height: 40,
+    height: 44,
     gap: 10,
   },
   pfp: {
@@ -284,10 +235,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#374151",
     textAlign: "center",
-  },
-  cardHeader: {
-    fontSize: 22,
-    fontWeight: 600,
   },
   pictureScroll: {
     gap: 10,

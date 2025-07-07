@@ -28,5 +28,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     overflow: "hidden",
+    padding: 16,
+    gap: 14,
   },
 });

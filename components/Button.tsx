@@ -1,22 +1,24 @@
 import { PropsWithChildren } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, ViewStyle } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 
 type Props = PropsWithChildren<{
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "green";
   icon?: keyof typeof Ionicons.glyphMap;
   onPress?: () => void;
+  style?: ViewStyle;
 }>;
 
 export default function Button({
+  style,
   variant = "secondary",
   icon,
   children,
   onPress,
 }: Props) {
   let variantStyles;
-  if (variant === "primary") {
+  if (variant === "primary" || variant === "green") {
     variantStyles = StyleSheet.create({
       container: {},
       text: {
@@ -28,6 +30,7 @@ export default function Button({
       container: {
         borderColor: "rgb(252, 211, 77)",
         borderWidth: 2,
+        backgroundColor: "#fff",
       },
       text: {
         color: "#78350f",
@@ -38,11 +41,18 @@ export default function Button({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.container, variantStyles.container]}
+      style={[styles.container, variantStyles.container, style]}
     >
       {variant === "primary" && (
         <LinearGradient
           colors={["#f43f5e", "#db2777"]}
+          end={{ x: 0.1, y: 0.2 }}
+          style={styles.gradientBg}
+        />
+      )}
+      {variant === "green" && (
+        <LinearGradient
+          colors={["#10b981", "#16a34a"]}
           end={{ x: 0.1, y: 0.2 }}
           style={styles.gradientBg}
         />

@@ -2,7 +2,7 @@ import { StyleSheet, Text, TextProps, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 type Props = {
-  icon: keyof typeof Ionicons.glyphMap;
+  icon?: keyof typeof Ionicons.glyphMap;
   iconColor?: string;
 } & TextProps;
 
@@ -11,12 +11,17 @@ export default function IconText({ icon, iconColor, children, style }: Props) {
 
   return (
     <View style={styles.container}>
-      <Ionicons
-        name={icon}
-        size={(flatStyles?.fontSize ?? 15) * 1.1}
-        color={iconColor ?? flatStyles?.color ?? "black"}
-      />
-      <Text style={style}> {children}</Text>
+      {icon ? (
+        <Ionicons
+          name={icon}
+          size={(flatStyles?.fontSize ?? 15) * 1.1}
+          color={iconColor ?? flatStyles?.color ?? "black"}
+        />
+      ) : null}
+      <Text style={style}>
+        {icon ? " " : ""}
+        {children}
+      </Text>
     </View>
   );
 }
