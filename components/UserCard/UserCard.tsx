@@ -15,8 +15,6 @@ export default function UserCard({ children }: PropsWithChildren) {
   let blurb: ReactElement | null = null;
   let otherChildren: ReactElement[] = [];
 
-  console.log("rendering user card");
-
   React.Children.forEach(children, (child) => {
     if (React.isValidElement(child)) {
       switch (child.type) {
