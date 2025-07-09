@@ -92,7 +92,6 @@ export default function EditPage() {
     <View style={{ flex: 1 }}>
       <PageBackground
         contentContainerStyle={{ paddingBottom: 80 }}
-        keyboardVerticalOffset={90}
       >
         <Card>
           <CardHeader icon="person-outline">Basic Info</CardHeader>

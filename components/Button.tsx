@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 16,
     overflow: "hidden",
+    height: 44,
   },
   text: {
     fontSize: 16,

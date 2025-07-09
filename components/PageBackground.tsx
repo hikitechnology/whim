@@ -1,43 +1,25 @@
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  ScrollViewProps,
-  StyleSheet,
-} from "react-native";
-
-// TODO: KeyboardAvoidingView is bad. switch to react-native-keyboard-controller once using dev builds
-
-type Props = {
-  keyboardVerticalOffset?: number;
-} & ScrollViewProps;
+import { ScrollView, ScrollViewProps, StyleSheet } from "react-native";
 
 export default function PageBackground({
   style,
   contentContainerStyle,
-  keyboardVerticalOffset,
   children,
   ...rest
-}: Props) {
+}: ScrollViewProps) {
   return (
-    <KeyboardAvoidingView
-      behavior="padding"
+    <ScrollView
       style={[styles.container, style]}
-      keyboardVerticalOffset={keyboardVerticalOffset}
+      contentContainerStyle={[styles.content, contentContainerStyle]}
+      {...rest}
     >
-      <ScrollView
-        contentContainerStyle={[styles.content, contentContainerStyle]}
-        {...rest}
-      >
-        {children}
-      </ScrollView>
-    </KeyboardAvoidingView>
+      {children}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fffbeb",
-    flex: 1,
   },
   content: {
     padding: 16,

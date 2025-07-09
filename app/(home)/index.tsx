@@ -8,7 +8,7 @@ import {
 import { useSharedValue } from "react-native-reanimated";
 
 import Overview, { BASE_OVERVIEW_HEIGHT } from "@/components/Overview";
-import UserCard from "@/components/UserCard";
+import UserCard from "@/components/Home/UserCard";
 import { getRandomUsers } from "@/placeholder/users";
 import { navigate } from "expo-router/build/global-state/routing";
 
@@ -28,6 +28,7 @@ export default function Index() {
         data={users}
         renderItem={({ item }) => (
           <UserCard
+            showPfp={true}
             name={item.name}
             location={item.location}
             mutualFriendsCount={item.mutualFriends}

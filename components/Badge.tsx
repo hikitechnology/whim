@@ -1,17 +1,21 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { PropsWithChildren } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import IconText from "./IconText";
 
 type Props = PropsWithChildren<{
   variant?: "small" | "large";
-  backgroundColor: string;
-  textColor: string;
+  backgroundColor?: string;
+  textColor?: string;
+  icon?: keyof typeof Ionicons.glyphMap;
   onPress?: () => void;
 }>;
 
 export default function Badge({
   variant = "small",
-  backgroundColor,
-  textColor,
+  backgroundColor = "#dbeafe",
+  textColor = "#1d4ed8",
+  icon,
   onPress,
   children,
 }: Props) {
@@ -43,7 +47,8 @@ export default function Badge({
       style={[styles.container, variantStyles.container, { backgroundColor }]}
       onPress={onPress}
     >
-      <Text
+      <IconText
+        icon={icon}
         style={[
           variantStyles.text,
           {
@@ -52,7 +57,7 @@ export default function Badge({
         ]}
       >
         {children}
-      </Text>
+      </IconText>
     </TouchableOpacity>
   );
 }

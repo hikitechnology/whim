@@ -6,7 +6,13 @@ type Props = {
   iconColor?: string;
 } & TextProps;
 
-export default function IconText({ icon, iconColor, children, style }: Props) {
+export default function IconText({
+  icon,
+  iconColor,
+  children,
+  style,
+  ...rest
+}: Props) {
   const flatStyles = StyleSheet.flatten(style);
 
   return (
@@ -18,7 +24,7 @@ export default function IconText({ icon, iconColor, children, style }: Props) {
           color={iconColor ?? flatStyles?.color ?? "black"}
         />
       ) : null}
-      <Text style={style}>
+      <Text style={style} {...rest}>
         {icon ? " " : ""}
         {children}
       </Text>
