@@ -12,14 +12,16 @@ type Props = {
 
 export default function TextInput({
   style,
+  enterKeyHint,
   borderColor = "rgb(252, 211, 77)",
-  borderColorFocused = "rgb(252, 211, 77)",
+  borderColorFocused,
   ...rest
 }: Props) {
   const [focused, setFocused] = useState(false);
 
   const focusStyle = {
-    borderColor: focused ? borderColorFocused : borderColor,
+    borderColor:
+      focused && borderColorFocused ? borderColorFocused : borderColor,
   };
 
   return (
@@ -28,7 +30,7 @@ export default function TextInput({
       placeholderTextColor="#6b7280"
       onFocus={() => setFocused(true)}
       onBlur={() => setFocused(false)}
-      enterKeyHint="done"
+      enterKeyHint={enterKeyHint ?? "done"}
       submitBehavior="blurAndSubmit"
       {...rest}
     />
