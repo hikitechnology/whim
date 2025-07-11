@@ -46,14 +46,16 @@ export default function Button({
       {variant === "primary" && (
         <LinearGradient
           colors={["#f43f5e", "#db2777"]}
-          end={{ x: 0.1, y: 0.2 }}
+          start={{ x: 0, y: 0.75 }}
+          end={{ x: 1, y: 0.25 }}
           style={styles.gradientBg}
         />
       )}
       {variant === "green" && (
         <LinearGradient
           colors={["#10b981", "#16a34a"]}
-          end={{ x: 0.1, y: 0.2 }}
+          start={{ x: 0, y: 0.75 }}
+          end={{ x: 1, y: 0.25 }}
           style={styles.gradientBg}
         />
       )}

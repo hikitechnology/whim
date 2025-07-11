@@ -64,6 +64,8 @@ export default function Overview({ scrollOffset }: Props) {
     <Animated.View style={[styles.container, animatedStyles.container]}>
       <AnimatedLinearGradient
         colors={["rgba(255, 237, 213, 0.9)", "rgba(254, 249, 195, 0.9)"]}
+        start={{ x: 0, y: 0.75 }}
+        end={{ x: 1, y: 0.25 }}
         style={[
           styles.innerLayout,
           { paddingTop: insets.top },
