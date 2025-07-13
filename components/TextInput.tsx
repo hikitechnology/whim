@@ -1,3 +1,4 @@
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { useState } from "react";
 import {
   TextInput as RNTextInput,
@@ -6,6 +7,7 @@ import {
 } from "react-native";
 
 type Props = {
+  provider?: "default" | "bottomSheet";
   borderColor?: string;
   borderColorFocused?: string;
 } & TextInputProps;
@@ -15,6 +17,7 @@ export default function TextInput({
   enterKeyHint,
   borderColor = "rgb(252, 211, 77)",
   borderColorFocused,
+  provider = "default",
   ...rest
 }: Props) {
   const [focused, setFocused] = useState(false);
@@ -24,8 +27,11 @@ export default function TextInput({
       focused && borderColorFocused ? borderColorFocused : borderColor,
   };
 
+  const InputProvider =
+    provider === "default" ? RNTextInput : BottomSheetTextInput;
+
   return (
-    <RNTextInput
+    <InputProvider
       style={[styles.input, focusStyle, style]}
       placeholderTextColor="#6b7280"
       onFocus={() => setFocused(true)}

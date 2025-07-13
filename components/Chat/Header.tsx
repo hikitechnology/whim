@@ -9,7 +9,7 @@ export default function Header() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <TouchableOpacity onPress={() => router.back()}>
+      <TouchableOpacity onPress={() => router.back()} hitSlop={20}>
         <Ionicons name="arrow-back-outline" size={24} color="#4b5563" />
       </TouchableOpacity>
       <View style={styles.infoContainer}>
@@ -22,7 +22,7 @@ export default function Header() {
           </View>
         </View>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity hitSlop={20}>
         <Ionicons name="location-outline" size={24} color="#d97706" />
       </TouchableOpacity>
     </View>
