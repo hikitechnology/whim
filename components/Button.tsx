@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: "hidden",
     height: 44,
+    paddingHorizontal: 20,
   },
   text: {
     fontSize: 16,

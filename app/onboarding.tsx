@@ -4,10 +4,12 @@ import Callout from "@/components/Callout";
 import Header from "@/components/Onboarding/Header";
 import Slides from "@/components/Onboarding/Slides";
 import TextInput from "@/components/TextInput";
+import { useAuthStore } from "@/utils/authStore";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 export default function Onboarding() {
+  const { completeOnboarding } = useAuthStore();
   const [progress, setProgress] = useState<number>(1);
 
   const onboardingSlides = (setSlide: (key: string) => void) => ({
@@ -155,7 +157,7 @@ export default function Onboarding() {
         <Button
           variant="textOnly"
           style={{ width: "100%" }}
-          onPress={() => setSlide("phone")}
+          onPress={completeOnboarding}
         >
           Continue without it
         </Button>
@@ -180,7 +182,7 @@ export default function Onboarding() {
           icon="sparkles-outline"
           variant="green"
           style={{ width: "100%" }}
-          onPress={() => setSlide("phone")}
+          onPress={completeOnboarding}
         >
           Got it! Let&apos;s start connecting
         </Button>
@@ -202,7 +204,6 @@ export default function Onboarding() {
     }
   }
 
-  console.log(progress);
   return (
     <View style={styles.container}>
       <Header currentPage={progress} pageCount={progressUpdatingPages.length} />
