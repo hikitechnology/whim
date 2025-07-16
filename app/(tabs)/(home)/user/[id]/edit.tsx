@@ -1,3 +1,5 @@
+// TODO: this whole page is basically unusable, i was rushing thru it just to get the styling done but didnt clean up, needs big refactor
+
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import {
   useForm,

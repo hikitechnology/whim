@@ -54,10 +54,18 @@ export default function UserCard(props: Props) {
           <UserCardBase.InterestsRow items={props.interests} />
         ) : null}
         <View style={styles.actions}>
-          <Button variant="primary" icon="hand-left-outline">
+          <Button
+            variant="primary"
+            icon="hand-left-outline"
+            style={{ flex: 1 }}
+          >
             Wave
           </Button>
-          <Button variant="secondary" icon="chatbubble-outline">
+          <Button
+            variant="secondary"
+            icon="chatbubble-outline"
+            style={{ flex: 1 }}
+          >
             Chat
           </Button>
         </View>

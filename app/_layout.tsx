@@ -1,44 +1,26 @@
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { Tabs } from "expo-router";
-import { Appearance } from "react-native";
+// TODO: persistent auth state management https://www.youtube.com/watch?v=zHZjJDTTHJg
 
-Appearance.setColorScheme("light");
+import { Stack } from "expo-router";
+
+const isLoggedIn = true;
+const hasCompletedOnboarding = false;
 
 export default function RootLayout() {
   return (
-    <>
-      <Tabs
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Tabs.Screen
-          name="(home)"
-          options={{
-            title: "Home",
-            tabBarIcon: ({ focused, color, size }) => (
-              <Ionicons
-                name={focused ? "home" : "home-outline"}
-                size={size}
-                color={color}
-              />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="(social)"
-          options={{
-            title: "Social",
-            tabBarIcon: ({ focused, color, size }) => (
-              <Ionicons
-                name={focused ? "people" : "people-outline"}
-                size={size}
-                color={color}
-              />
-            ),
-          }}
-        />
-      </Tabs>
-    </>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Protected guard={hasCompletedOnboarding && isLoggedIn}>
+        <Stack.Screen name="(tabs)" />
+      </Stack.Protected>
+      <Stack.Protected guard={hasCompletedOnboarding && !isLoggedIn}>
+        <Stack.Screen name="sign-in" />
+      </Stack.Protected>
+      <Stack.Protected guard={!hasCompletedOnboarding}>
+        <Stack.Screen name="onboarding" />
+      </Stack.Protected>
+    </Stack>
   );
 }

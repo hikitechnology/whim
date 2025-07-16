@@ -4,12 +4,15 @@ import {
   TextInput as RNTextInput,
   StyleSheet,
   TextInputProps,
+  View,
 } from "react-native";
+import FormLabel from "./FormLabel";
 
 type Props = {
   provider?: "default" | "bottomSheet";
   borderColor?: string;
   borderColorFocused?: string;
+  label?: string;
 } & TextInputProps;
 
 export default function TextInput({
@@ -18,6 +21,7 @@ export default function TextInput({
   borderColor = "rgb(252, 211, 77)",
   borderColorFocused,
   provider = "default",
+  label,
   ...rest
 }: Props) {
   const [focused, setFocused] = useState(false);
@@ -31,19 +35,26 @@ export default function TextInput({
     provider === "default" ? RNTextInput : BottomSheetTextInput;
 
   return (
-    <InputProvider
-      style={[styles.input, focusStyle, style]}
-      placeholderTextColor="#6b7280"
-      onFocus={() => setFocused(true)}
-      onBlur={() => setFocused(false)}
-      enterKeyHint={enterKeyHint ?? "done"}
-      submitBehavior="blurAndSubmit"
-      {...rest}
-    />
+    <View style={styles.container}>
+      {label ? <FormLabel>{label}</FormLabel> : null}
+      <InputProvider
+        style={[styles.input, focusStyle, style]}
+        placeholderTextColor="#6b7280"
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        enterKeyHint={enterKeyHint ?? "done"}
+        submitBehavior="blurAndSubmit"
+        {...rest}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    gap: 8,
+  },
   input: {
     padding: 8,
     borderWidth: 2,

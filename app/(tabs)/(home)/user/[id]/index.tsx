@@ -54,10 +54,16 @@ export default function UserProfile() {
           <Text style={styles.bio}>{user.bio}</Text>
         </View>
         <View style={styles.interactions}>
-          <Button variant="primary" icon="hand-left-outline">
+          <Button
+            variant="primary"
+            icon="hand-left-outline"
+            style={{ flex: 1 }}
+          >
             Wave
           </Button>
-          <Button icon="chatbubble-outline">Chat</Button>
+          <Button icon="chatbubble-outline" style={{ flex: 1 }}>
+            Chat
+          </Button>
         </View>
       </Card>
       {user.numPictures && user.numPictures > 0 ? (
