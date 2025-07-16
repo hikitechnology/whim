@@ -2,15 +2,20 @@ import BigIcon from "@/components/BigIcon";
 import Button from "@/components/Button";
 import Callout from "@/components/Callout";
 import Header from "@/components/Onboarding/Header";
-import Slides from "@/components/Onboarding/Slides";
+import Slides from "@/components/Slides";
 import TextInput from "@/components/TextInput";
 import { useAuthStore } from "@/utils/authStore";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 export default function Onboarding() {
-  const { completeOnboarding } = useAuthStore();
+  const { isLoggedIn, completeOnboarding, logIn } = useAuthStore();
   const [progress, setProgress] = useState<number>(1);
+
+  function completeOnboardingAndLogin() {
+    logIn();
+    completeOnboarding();
+  }
 
   const onboardingSlides = (setSlide: (key: string) => void) => ({
     phone: (
@@ -157,7 +162,7 @@ export default function Onboarding() {
         <Button
           variant="textOnly"
           style={{ width: "100%" }}
-          onPress={completeOnboarding}
+          onPress={completeOnboardingAndLogin}
         >
           Continue without it
         </Button>
@@ -182,7 +187,7 @@ export default function Onboarding() {
           icon="sparkles-outline"
           variant="green"
           style={{ width: "100%" }}
-          onPress={completeOnboarding}
+          onPress={completeOnboardingAndLogin}
         >
           Got it! Let&apos;s start connecting
         </Button>
@@ -190,13 +195,9 @@ export default function Onboarding() {
     ),
   });
 
-  const progressUpdatingPages: (string | number)[] = [
-    "phone",
-    "verify",
-    "fgLocation",
-    "bgLocation",
-    "bgReminder",
-  ];
+  const progressUpdatingPages: (string | number)[] = isLoggedIn
+    ? ["fgLocation", "bgLocation", "bgReminder"]
+    : ["phone", "verify", "fgLocation", "bgLocation", "bgReminder"];
 
   function setProgressWithSlide(slideName: string | number) {
     if (progressUpdatingPages.includes(slideName)) {
@@ -210,7 +211,7 @@ export default function Onboarding() {
       <View style={styles.slides}>
         <Slides
           slides={onboardingSlides}
-          initialSlide="phone"
+          initialSlide={isLoggedIn ? "fgLocation" : "phone"}
           onSlideChange={setProgressWithSlide}
         />
       </View>

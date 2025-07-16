@@ -3,7 +3,8 @@ import { useAuthStore } from "@/utils/authStore";
 import { Stack } from "expo-router";
 
 export default function RootLayout() {
-  const { hasCompletedOnboarding, resetOnboarding } = useAuthStore();
+  const { isLoggedIn, hasCompletedOnboarding, resetOnboarding, logOut } =
+    useAuthStore();
 
   return (
     <>
@@ -21,13 +22,30 @@ export default function RootLayout() {
           reset onboarding
         </Button>
       )}
+      {isLoggedIn && (
+        <Button
+          style={{
+            position: "absolute",
+            top: 150,
+            left: 10,
+            zIndex: 100,
+          }}
+          variant="orange"
+          onPress={logOut}
+        >
+          log out
+        </Button>
+      )}
       <Stack
         screenOptions={{
           headerShown: false,
         }}
       >
-        <Stack.Protected guard={hasCompletedOnboarding}>
+        <Stack.Protected guard={hasCompletedOnboarding && isLoggedIn}>
           <Stack.Screen name="(tabs)" />
+        </Stack.Protected>
+        <Stack.Protected guard={hasCompletedOnboarding && !isLoggedIn}>
+          <Stack.Screen name="login" />
         </Stack.Protected>
         <Stack.Protected guard={!hasCompletedOnboarding}>
           <Stack.Screen name="onboarding" />
