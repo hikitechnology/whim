@@ -208,12 +208,14 @@ export default function Onboarding() {
   return (
     <View style={styles.container}>
       <Header currentPage={progress} pageCount={progressUpdatingPages.length} />
-      <View style={styles.slides}>
-        <Slides
-          slides={onboardingSlides}
-          initialSlide={isLoggedIn ? "fgLocation" : "phone"}
-          onSlideChange={setProgressWithSlide}
-        />
+      <View style={styles.slidesArea}>
+        <View style={styles.slides}>
+          <Slides
+            slides={onboardingSlides}
+            initialSlide={isLoggedIn ? "fgLocation" : "phone"}
+            onSlideChange={setProgressWithSlide}
+          />
+        </View>
       </View>
     </View>
   );
@@ -224,8 +226,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fffbeb",
     flex: 1,
   },
-  slides: {
+  slidesArea: {
+    flex: 1,
     padding: 24,
     alignItems: "center",
+    justifyContent: "center",
+  },
+  slides: {
+    paddingBottom: 136,
   },
 });
