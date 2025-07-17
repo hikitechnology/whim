@@ -1,8 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
-import { Appearance } from "react-native";
-
-Appearance.setColorScheme("light");
 
 export default function TabsLayout() {
   return (

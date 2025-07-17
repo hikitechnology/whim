@@ -1,31 +1,22 @@
 {
   "expo": {
-    "name": "whim",
+    "name": "Whim",
     "slug": "whim",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "whim",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "platforms": [
+      "ios"
+    ],
     "ios": {
-      "supportsTablet": true,
       "bundleIdentifier": "com.whimdev.whim",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "plugins": [
       "expo-router",
@@ -34,8 +25,7 @@
         {
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#fff2cc"
         }
       ],
       [
@@ -45,7 +35,17 @@
           "isIosBackgroundLocationEnabled": true
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
