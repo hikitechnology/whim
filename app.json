@@ -45,6 +45,12 @@
             "useFrameworks": "static"
           }
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "enableBackgroundRemoteNotifications": true
+        }
       ]
     ],
     "experiments": {
