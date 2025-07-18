@@ -61,6 +61,10 @@ const styles = StyleSheet.create({
     gap: 14,
     borderColor: "rgba(254, 215, 170, 0.5)",
     borderWidth: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
   },
   topText: {
     flexDirection: "row",
