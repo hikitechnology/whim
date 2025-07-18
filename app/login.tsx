@@ -2,11 +2,19 @@ import BigIcon from "@/components/BigIcon";
 import Button from "@/components/Button";
 import Slides from "@/components/Slides";
 import TextInput from "@/components/TextInput";
+import useAuth from "@/hooks/useAuth";
 import { useAuthStore } from "@/utils/authStore";
-import { StyleSheet, View } from "react-native";
+import { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function Login() {
   const { logIn } = useAuthStore();
+  const { sendVerificationCode, confirmCode } = useAuth();
+
+  const [code, setCode] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneEntryFailed, setPhoneEntryFailed] = useState(false);
+  const [codeEntryFailed, setCodeEntryFailed] = useState(false);
 
   const loginSlides = (setSlide: (key: string) => void) => ({
     phone: (
@@ -16,19 +24,34 @@ export default function Login() {
         <Slides.Text>
           Enter your phone number to sign in or create an account.
         </Slides.Text>
-        {/* TODO: pretty phone number formatting */}
+        {/* TODO: pretty phone number formatting and validation */}
         <TextInput
           label="Phone Number"
           borderColor="#bfdbfe"
           borderColorFocused="#60a5fa"
           placeholder="(555) 123-4567"
-          keyboardType="numeric"
+          keyboardType="phone-pad"
+          onChangeText={(text) => setPhoneNumber(text)}
         />
+        {phoneEntryFailed ? (
+          <Text style={{ color: "red" }}>
+            Failed to process your phone number, please try again
+          </Text>
+        ) : null}
         <Button
           icon="arrow-forward-outline"
           variant="blue"
           style={{ width: "100%" }}
-          onPress={() => setSlide("verify")}
+          onPress={async () => {
+            const result = await sendVerificationCode(phoneNumber);
+            if (result.status === "success") {
+              console.log("Phone entry succeeded");
+              setSlide("verify");
+            } else {
+              console.log("Phone entry failed", result.message);
+              setPhoneEntryFailed(true);
+            }
+          }}
         >
           Continue
         </Button>
@@ -48,13 +71,29 @@ export default function Login() {
           borderColorFocused="#4ade80"
           placeholder="123456"
           textContentType="oneTimeCode"
+          keyboardType="numeric"
           autoComplete="sms-otp"
+          onChangeText={(text) => setCode(text)}
         />
+        {codeEntryFailed ? (
+          <Text style={{ color: "red" }}>
+            Incorrect verification code, please try again
+          </Text>
+        ) : null}
         <Button
           icon="arrow-forward-outline"
           variant="green"
           style={{ width: "100%" }}
-          onPress={logIn}
+          onPress={async () => {
+            const result = await confirmCode(code);
+            if (result.status === "success") {
+              console.log("Code entry succeeded");
+              logIn();
+            } else {
+              console.log("Code entry failed", result.message);
+              setCodeEntryFailed(true);
+            }
+          }}
         >
           Verify & Continue
         </Button>
