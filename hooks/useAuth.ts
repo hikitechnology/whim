@@ -7,7 +7,7 @@ import { useState } from "react";
 
 const AUTOMATIC_COUNTRY_CODE = "+1";
 
-type AuthResult = {
+export type AuthResult = {
   status: "success" | "failure";
   message?: string;
 };
