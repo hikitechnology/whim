@@ -1,3 +1,4 @@
+import React from "react";
 import UserCardBase from "../UserCard";
 
 type Props = {
@@ -8,13 +9,7 @@ type Props = {
   metAt?: string;
 };
 
-export default function UserCard({
-  name,
-  isFriend,
-  lastMessaged,
-  lastMessage,
-  metAt,
-}: Props) {
+function UserCard({ name, isFriend, lastMessaged, lastMessage, metAt }: Props) {
   return (
     <UserCardBase>
       <UserCardBase.ProfilePic />
@@ -38,3 +33,5 @@ export default function UserCard({
     </UserCardBase>
   );
 }
+
+export default React.memo(UserCard);

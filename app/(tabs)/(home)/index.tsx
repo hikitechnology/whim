@@ -10,7 +10,6 @@ import { useSharedValue } from "react-native-reanimated";
 import Overview, { BASE_OVERVIEW_HEIGHT } from "@/components/Home/Overview";
 import UserCard from "@/components/Home/UserCard";
 import { getRandomUsers } from "@/placeholder/users";
-import { navigate } from "expo-router/build/global-state/routing";
 
 const users = getRandomUsers(10);
 
@@ -36,7 +35,7 @@ export default function Index() {
             distance={item.distance}
             timeTogether={item.timeTogether}
             interests={item.interests}
-            onPress={() => navigate(`/user/${item.id}`)}
+            userId={item.id}
           />
         )}
         style={styles.scrollContainer}
