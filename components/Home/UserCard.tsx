@@ -1,6 +1,8 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import UserCardBase from "../UserCard/index";
 import Button from "../Button";
+import React from "react";
+import { useRouter } from "expo-router";
 
 type Props = {
   name?: string;
@@ -11,12 +13,14 @@ type Props = {
   timeTogether?: number;
   interests?: string[];
   mutualFriendsCount?: number;
-  onPress?: () => void;
+  userId?: number;
 };
 
-export default function UserCard(props: Props) {
+function UserCard(props: Props) {
+  const router = useRouter();
+
   return (
-    <Pressable onPress={props.onPress}>
+    <Pressable onPress={() => router.navigate(`/user/${props.userId}`)}>
       <UserCardBase>
         {props.name ? (
           <UserCardBase.Name>{props.name}</UserCardBase.Name>
@@ -80,3 +84,5 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 });
+
+export default React.memo(UserCard);
