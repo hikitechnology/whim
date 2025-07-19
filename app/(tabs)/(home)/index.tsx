@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 
-import Overview, { BASE_OVERVIEW_HEIGHT } from "@/components/Overview";
+import Overview, { BASE_OVERVIEW_HEIGHT } from "@/components/Home/Overview";
 import UserCard from "@/components/Home/UserCard";
 import { getRandomUsers } from "@/placeholder/users";
 import { navigate } from "expo-router/build/global-state/routing";
