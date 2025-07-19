@@ -2,19 +2,15 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { getItem, setItem, deleteItemAsync } from "expo-secure-store";
 
-type UserState = {
-  isLoggedIn: boolean;
+type PersistentState = {
   hasCompletedOnboarding: boolean;
   completeOnboarding: () => void;
   resetOnboarding: () => void;
-  logIn: () => void;
-  logOut: () => void;
 };
 
-export const useAuthStore = create(
-  persist<UserState>(
+export const usePersistentStore = create(
+  persist<PersistentState>(
     (set) => ({
-      isLoggedIn: false,
       hasCompletedOnboarding: false,
       completeOnboarding: () => {
         set((state) => ({
@@ -28,21 +24,9 @@ export const useAuthStore = create(
           hasCompletedOnboarding: false,
         }));
       },
-      logIn: () => {
-        set((state) => ({
-          ...state,
-          isLoggedIn: true,
-        }));
-      },
-      logOut: () => {
-        set((state) => ({
-          ...state,
-          isLoggedIn: false,
-        }));
-      },
     }),
     {
-      name: "auth-store",
+      name: "persistent-store",
       storage: createJSONStorage(() => ({
         setItem,
         getItem,

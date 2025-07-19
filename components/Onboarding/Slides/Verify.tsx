@@ -2,17 +2,18 @@ import BigIcon from "@/components/BigIcon";
 import Button from "@/components/Button";
 import Slides from "@/components/Slides";
 import TextInput from "@/components/TextInput";
-import { AuthResult } from "@/hooks/useAuth";
+import useAuthContext from "@/hooks/useAuthContext";
 import { useState } from "react";
 import { Text } from "react-native";
 
 type Props = {
   numberToShow: string;
   onNext: () => void;
-  confirmCode: (code: string) => Promise<AuthResult>;
 };
 
-export default function Verify({ numberToShow, onNext, confirmCode }: Props) {
+export default function Verify({ numberToShow, onNext }: Props) {
+  const { confirmCode } = useAuthContext();
+
   const [code, setCode] = useState("");
   const [codeEntryFailed, setCodeEntryFailed] = useState(false);
 

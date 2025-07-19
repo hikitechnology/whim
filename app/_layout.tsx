@@ -1,10 +1,30 @@
 import Button from "@/components/Button";
-import { useAuthStore } from "@/utils/authStore";
-import { Stack } from "expo-router";
+import AuthProvider from "@/context/AuthContext";
+import useAuthContext from "@/hooks/useAuthContext";
+import { usePersistentStore } from "@/utils/persistentStore";
+import { SplashScreen, Stack } from "expo-router";
+import { useEffect } from "react";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { isLoggedIn, hasCompletedOnboarding, resetOnboarding, logOut } =
-    useAuthStore();
+  return (
+    <AuthProvider>
+      <RootNavigator />
+    </AuthProvider>
+  );
+}
+
+function RootNavigator() {
+  const { hasCompletedOnboarding, resetOnboarding } = usePersistentStore();
+  const { isInitializing, user, signOut } = useAuthContext();
+
+  useEffect(() => {
+    if (!isInitializing) {
+      // give slide transition time to complete
+      setTimeout(SplashScreen.hideAsync, 500);
+    }
+  }, [isInitializing]);
 
   return (
     <>
@@ -22,7 +42,7 @@ export default function RootLayout() {
           reset onboarding
         </Button>
       )}
-      {isLoggedIn && (
+      {user && (
         <Button
           style={{
             position: "absolute",
@@ -31,7 +51,7 @@ export default function RootLayout() {
             zIndex: 100,
           }}
           variant="orange"
-          onPress={logOut}
+          onPress={signOut}
         >
           log out
         </Button>
@@ -41,10 +61,10 @@ export default function RootLayout() {
           headerShown: false,
         }}
       >
-        <Stack.Protected guard={hasCompletedOnboarding && isLoggedIn}>
+        <Stack.Protected guard={hasCompletedOnboarding && user !== null}>
           <Stack.Screen name="(tabs)" />
         </Stack.Protected>
-        <Stack.Protected guard={hasCompletedOnboarding && !isLoggedIn}>
+        <Stack.Protected guard={hasCompletedOnboarding && user === null}>
           <Stack.Screen name="login" />
         </Stack.Protected>
         <Stack.Protected guard={!hasCompletedOnboarding}>
