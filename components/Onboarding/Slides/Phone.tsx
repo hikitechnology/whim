@@ -2,16 +2,18 @@ import BigIcon from "@/components/BigIcon";
 import Button from "@/components/Button";
 import Slides from "@/components/Slides";
 import TextInput from "@/components/TextInput";
-import { AuthResult } from "@/hooks/useAuth";
+import useAuthContext from "@/hooks/useAuthContext";
 import { useState } from "react";
 import { Text } from "react-native";
 
 type Props = {
   onNext: () => void;
-  sendVerificationCode: (phoneNumber: string) => Promise<AuthResult>;
+  setDisplayNumber: (number: string) => void;
 };
 
-export default function Phone({ onNext, sendVerificationCode }: Props) {
+export default function Phone({ onNext, setDisplayNumber }: Props) {
+  const { sendVerificationCode } = useAuthContext();
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneEntryFailed, setPhoneEntryFailed] = useState(false);
 
@@ -19,6 +21,7 @@ export default function Phone({ onNext, sendVerificationCode }: Props) {
     const result = await sendVerificationCode(phoneNumber);
     if (result.status === "success") {
       console.log("Phone entry succeeded");
+      setDisplayNumber(phoneNumber);
       onNext();
     } else {
       console.log("Phone entry failed", result.message);

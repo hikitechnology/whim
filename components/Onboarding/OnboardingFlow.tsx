@@ -1,6 +1,6 @@
 import Header from "@/components/Onboarding/Header";
 import Slides from "@/components/Slides";
-import { useAuthStore } from "@/utils/authStore";
+import { usePersistentStore } from "@/utils/persistentStore";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Phone from "./Slides/Phone";
@@ -9,7 +9,6 @@ import ForegroundLocation from "./Slides/ForegroundLocation";
 import BackgroundLocation from "./Slides/BackgroundLocation";
 import BackgroundConfirm from "./Slides/BackgroundConfirm";
 import BackgroundReminder from "./Slides/BackgroundReminder";
-import useAuth from "@/hooks/useAuth";
 
 type Props = {
   showLogin?: boolean;
@@ -22,24 +21,15 @@ export default function OnboardingFlow({
   showPermissions = true,
   showProgressBar = true,
 }: Props) {
-  const { completeOnboarding, logIn } = useAuthStore();
-  const { sendVerificationCode, confirmCode } = useAuth();
+  const { completeOnboarding } = usePersistentStore();
   const [progress, setProgress] = useState<number>(1);
   const [phoneNumber, setPhoneNumber] = useState("");
-
-  function completeOnboardingAndLogin() {
-    logIn();
-    completeOnboarding();
-  }
 
   const onboardingSlides = (setSlide: (key: string) => void) => ({
     phone: (
       <Phone
         onNext={() => setSlide("verify")}
-        sendVerificationCode={(phoneNumber) => {
-          setPhoneNumber(phoneNumber);
-          return sendVerificationCode(phoneNumber);
-        }}
+        setDisplayNumber={setPhoneNumber}
       />
     ),
     verify: (
@@ -49,10 +39,9 @@ export default function OnboardingFlow({
           if (showPermissions) {
             setSlide("fgLocation");
           } else {
-            logIn();
+            completeOnboarding();
           }
         }}
-        confirmCode={confirmCode}
       />
     ),
     fgLocation: <ForegroundLocation onNext={() => setSlide("bgLocation")} />,
@@ -65,10 +54,10 @@ export default function OnboardingFlow({
     bgConfirm: (
       <BackgroundConfirm
         onNext={() => setSlide("bgReminder")}
-        onSkip={completeOnboardingAndLogin}
+        onSkip={completeOnboarding}
       />
     ),
-    bgReminder: <BackgroundReminder onNext={completeOnboardingAndLogin} />,
+    bgReminder: <BackgroundReminder onNext={completeOnboarding} />,
   });
 
   const progressUpdatingPages: (string | number)[] = [
