@@ -16,10 +16,12 @@ export default function Verify({ numberToShow, onNext }: Props) {
 
   const [code, setCode] = useState("");
   const [codeEntryFailed, setCodeEntryFailed] = useState(false);
+  const [continueDisabled, setContinueDisabled] = useState(false);
 
   const numberFormatted = `(${numberToShow.substring(0, 3)}) ${numberToShow.substring(3, 6)}-${numberToShow.substring(6)}`;
 
   async function attemptSubmitCode() {
+    setContinueDisabled(true);
     const result = await confirmCode(code);
     if (result.status === "success") {
       console.log("Code entry succeeded, signing in...");
@@ -27,6 +29,7 @@ export default function Verify({ numberToShow, onNext }: Props) {
     } else {
       console.log("Code entry failed", result.message);
       setCodeEntryFailed(true);
+      setContinueDisabled(false);
     }
   }
 
@@ -55,6 +58,7 @@ export default function Verify({ numberToShow, onNext }: Props) {
         variant="green"
         style={{ width: "100%" }}
         onPress={attemptSubmitCode}
+        disabled={continueDisabled}
       >
         Verify & Continue
       </Button>

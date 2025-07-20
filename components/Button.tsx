@@ -21,6 +21,7 @@ type Props = PropsWithChildren<{
   icon?: keyof typeof Ionicons.glyphMap;
   onPress?: () => void;
   style?: ViewStyle;
+  disabled?: boolean;
 }>;
 
 export default function Button({
@@ -28,6 +29,7 @@ export default function Button({
   variant = "secondary",
   icon,
   children,
+  disabled,
   onPress,
 }: Props) {
   let variantStyles;
@@ -86,7 +88,13 @@ export default function Button({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.container, variantStyles.container, style]}
+      style={[
+        styles.container,
+        variantStyles.container,
+        style,
+        disabled && { opacity: 0.5 },
+      ]}
+      disabled={disabled}
     >
       {gradientColors && (
         <LinearGradient
