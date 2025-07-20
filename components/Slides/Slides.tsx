@@ -1,5 +1,6 @@
 import Card from "@/components/Card";
 import React, { ReactElement, useState } from "react";
+import { KeyboardAvoidingView } from "react-native";
 
 type Props = {
   slides: (setSlide: (id: string | number) => void) => {
@@ -24,9 +25,11 @@ export default function Slides({
   const currentSlideComponent = slides(setSlide)[currentSlide];
 
   return (
-    <Card innerStyle={{ padding: 34, overflow: "visible" }}>
-      {/* key is added to trigger rerender. animation wont work without*/}
-      {React.cloneElement(currentSlideComponent, { key: currentSlide })}
-    </Card>
+    <KeyboardAvoidingView behavior="padding">
+      <Card innerStyle={{ padding: 34, overflow: "visible" }}>
+        {/* key is added to trigger rerender. animation wont work without*/}
+        {React.cloneElement(currentSlideComponent, { key: currentSlide })}
+      </Card>
+    </KeyboardAvoidingView>
   );
 }
