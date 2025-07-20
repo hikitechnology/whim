@@ -21,10 +21,14 @@ function RootNavigator() {
 
   useEffect(() => {
     if (!isInitializing) {
-      // give slide transition time to complete
-      setTimeout(SplashScreen.hideAsync, 500);
+      // give navigator time to mount
+      setTimeout(SplashScreen.hideAsync, 200);
     }
   }, [isInitializing]);
+
+  if (isInitializing) {
+    return null;
+  }
 
   return (
     <>

@@ -9,6 +9,7 @@ import ForegroundLocation from "./Slides/ForegroundLocation";
 import BackgroundLocation from "./Slides/BackgroundLocation";
 import BackgroundConfirm from "./Slides/BackgroundConfirm";
 import BackgroundReminder from "./Slides/BackgroundReminder";
+import Profile from "./Slides/Profile";
 
 type Props = {
   showLogin?: boolean;
@@ -37,13 +38,14 @@ export default function OnboardingFlow({
         numberToShow={phoneNumber}
         onNext={() => {
           if (showPermissions) {
-            setSlide("fgLocation");
+            setSlide("profile");
           } else {
             completeOnboarding();
           }
         }}
       />
     ),
+    profile: <Profile onNext={() => setSlide("fgLocation")} />,
     fgLocation: <ForegroundLocation onNext={() => setSlide("bgLocation")} />,
     bgLocation: (
       <BackgroundLocation
@@ -61,7 +63,7 @@ export default function OnboardingFlow({
   });
 
   const progressUpdatingPages: (string | number)[] = [
-    ...(showLogin ? ["phone", "verify"] : []),
+    ...(showLogin ? ["phone", "verify", "profile"] : []),
     ...(showPermissions ? ["fgLocation", "bgLocation", "bgReminder"] : []),
   ];
 
