@@ -16,8 +16,10 @@ export default function Phone({ onNext, setDisplayNumber }: Props) {
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneEntryFailed, setPhoneEntryFailed] = useState(false);
+  const [continueDisabled, setContinueDisabled] = useState(false);
 
   async function attemptSignIn() {
+    setContinueDisabled(true);
     const result = await sendVerificationCode(phoneNumber);
     if (result.status === "success") {
       console.log("Phone entry succeeded");
@@ -26,6 +28,7 @@ export default function Phone({ onNext, setDisplayNumber }: Props) {
     } else {
       console.log("Phone entry failed", result.message);
       setPhoneEntryFailed(true);
+      setContinueDisabled(false);
     }
   }
 
@@ -56,6 +59,7 @@ export default function Phone({ onNext, setDisplayNumber }: Props) {
         variant="blue"
         style={{ width: "100%" }}
         onPress={attemptSignIn}
+        disabled={continueDisabled}
       >
         Continue
       </Button>
