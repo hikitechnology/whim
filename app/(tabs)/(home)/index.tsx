@@ -10,10 +10,21 @@ import { useSharedValue } from "react-native-reanimated";
 import Overview, { BASE_OVERVIEW_HEIGHT } from "@/components/Home/Overview";
 import UserCard from "@/components/Home/UserCard";
 import { getRandomUsers } from "@/placeholder/users";
+import { getIdToken } from "@react-native-firebase/auth";
+import useAuthContext from "@/hooks/useAuthContext";
+import { useEffect } from "react";
 
 const users = getRandomUsers(10);
 
 export default function Index() {
+  const { user } = useAuthContext();
+
+  useEffect(() => {
+    getIdToken(user!).then((token) =>
+      console.log(`Signed in with token: ${token}`),
+    );
+  }, [user]);
+
   const scrollOffset = useSharedValue(0);
 
   const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {

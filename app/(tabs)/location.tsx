@@ -11,19 +11,15 @@ import * as Location from "expo-location";
 import { Button, StyleSheet, Text, View } from "react-native";
 import * as TaskManager from "expo-task-manager";
 import { useState } from "react";
+import { updateLocation } from "@/utils/api";
+import { getAuth } from "@react-native-firebase/auth";
 
-const WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1394712696649154681/67Uwuuvvoh0P22bCy_b7a9sKlvyQPkTCxDsIER3icyQIVpYx2sh2xtEzPSF2jRGwGE_t";
 const LOCATION_TASK_NAME = "background-location-task";
 
-async function sendWebhookMessage(message: string) {
-  const formData = new FormData();
-  formData.append("content", message);
-
-  await fetch(WEBHOOK_URL, {
-    method: "POST",
-    body: formData,
-  });
+async function sendMessage(coords: { x: number; y: number }) {
+  const uid = getAuth().currentUser!.uid;
+  console.log(coords);
+  await updateLocation(uid, coords);
 }
 
 type LocationTaskData = {
@@ -34,11 +30,14 @@ TaskManager.defineTask<LocationTaskData>(
   LOCATION_TASK_NAME,
   async ({ data, error }) => {
     if (error) {
-      sendWebhookMessage(`Error occured: ${error.message}`);
+      console.error(`location error occured: ${error}`);
     }
     if (data) {
       const { locations } = data;
-      sendWebhookMessage(`Location received: ${JSON.stringify(locations)}`);
+      sendMessage({
+        x: locations[0].coords.latitude,
+        y: locations[0].coords.longitude,
+      });
     }
   },
 );
@@ -56,7 +55,6 @@ export default function LocationPage() {
   }
 
   async function enableTracking() {
-    await sendWebhookMessage("Background location tracking enabled from app");
     await requestPermission();
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       accuracy: Location.Accuracy.Highest,
@@ -64,7 +62,6 @@ export default function LocationPage() {
   }
 
   async function disableTracking() {
-    await sendWebhookMessage("Background location tracking disabled from app");
     await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
   }
 
