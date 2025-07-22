@@ -48,3 +48,25 @@ export async function updateProfile(
     };
   }
 }
+
+export async function updateLocation(
+  userId: string,
+  coordinates: { x: number; y: number },
+) {
+  const response = await apiFetch(`/user/${userId}/update-location`, {
+    body: JSON.stringify(coordinates),
+    method: "PATCH",
+  });
+
+  if (response.ok) {
+    return { status: "success" };
+  } else {
+    return {
+      status: "failure",
+      response: {
+        code: response.status,
+        body: await response.json(),
+      },
+    };
+  }
+}

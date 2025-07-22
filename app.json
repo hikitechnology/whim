@@ -14,7 +14,10 @@
     "ios": {
       "bundleIdentifier": "com.whimdev.whim",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
       },
       "googleServicesFile": "./GoogleService-Info.plist"
     },
