@@ -5,7 +5,7 @@ import TextInput from "@/components/TextInput";
 import PfpSelector from "../PfpSelector";
 import useAuthContext from "@/hooks/useAuthContext";
 import { useState } from "react";
-import { updateProfile } from "@/utils/api";
+import { updateUserProfile } from "@/utils/api";
 
 type Props = {
   onNext: () => void;
@@ -22,17 +22,16 @@ export default function Profile({ onNext }: Props) {
 
     const trimmedName = name.trim();
     if (user && trimmedName.length !== 0) {
-      const result = await updateProfile(user.uid, {
+      updateUserProfile({
+        uid: user.uid,
         name: trimmedName,
-      });
-      if (result.status === "success") {
-        onNext();
-      } else {
-        console.error("Failed to update profile");
-      }
+      })
+        .then(onNext)
+        .catch((error) => {
+          console.error(error);
+          setNextDisabled(false);
+        });
     }
-
-    setNextDisabled(false);
   }
 
   return (

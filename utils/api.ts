@@ -1,9 +1,8 @@
-import { BASE_URL } from "@/constants";
+import { UserProfile } from "@/types/UserProfile";
 import { getAuth, getIdToken } from "@react-native-firebase/auth";
 
 async function apiFetch(url: string, options: RequestInit = {}) {
   const user = getAuth().currentUser;
-
   const headers = {
     "Content-Type": "application/json",
     ...(user
@@ -11,62 +10,23 @@ async function apiFetch(url: string, options: RequestInit = {}) {
       : {}),
     ...options.headers,
   };
-
-  const response = await fetch(BASE_URL + url, { ...options, headers });
+  const response = await fetch(process.env.EXPO_PUBLIC_BASE_URL + url, {
+    ...options,
+    headers,
+  });
   return response;
 }
 
-type ApiResult = {
-  status: "success" | "failure";
-  response?: {
-    code: number;
-    body: string;
-  };
-};
-
-type ApiUser = {
-  name: string;
-};
-
-export async function updateProfile(
-  userId: string,
-  updatedInfo: Partial<ApiUser>,
-): Promise<ApiResult> {
-  const response = await apiFetch(`/user/${userId}/update`, {
-    body: JSON.stringify(updatedInfo),
-    method: "PATCH",
-  });
-  if (response.ok) {
-    return { status: "success" };
-  } else {
-    return {
-      status: "failure",
-      response: {
-        code: response.status,
-        body: await response.json(),
-      },
-    };
-  }
+export async function getUserProfile(id: string): Promise<UserProfile> {
+  const response = await apiFetch(`/user/${id}`);
+  return response.json();
 }
 
-export async function updateLocation(
-  userId: string,
-  coordinates: { x: number; y: number },
+export async function updateUserProfile(
+  updatedProfile: Partial<UserProfile> & Pick<UserProfile, "uid">,
 ) {
-  const response = await apiFetch(`/user/${userId}/update-location`, {
-    body: JSON.stringify(coordinates),
-    method: "PATCH",
+  return apiFetch(`/user/${updatedProfile.uid}/update`, {
+    body: JSON.stringify(updatedProfile),
+    method: "patch",
   });
-
-  if (response.ok) {
-    return { status: "success" };
-  } else {
-    return {
-      status: "failure",
-      response: {
-        code: response.status,
-        body: await response.json(),
-      },
-    };
-  }
 }

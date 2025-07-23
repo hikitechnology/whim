@@ -1,0 +1,185 @@
+import { StyleSheet, Text, View } from "react-native";
+import Card from "../../Card";
+import CardHeader from "../../CardHeader";
+import PageBackground from "../../PageBackground";
+import TextInput from "../../TextInput";
+import Button from "../../Button";
+import { FormUserProfile, UserProfile } from "@/types/UserProfile";
+import SwitchRow from "../../SwitchRow";
+import { Controller, useForm } from "react-hook-form";
+import Interests from "./Sections/Interests";
+import {
+  formProfileToNormalProfile,
+  normalProfileToFormProfile,
+} from "@/utils/form";
+import Traits from "./Sections/Traits";
+import Favorites from "./Sections/Favorites";
+import LookingFor from "./Sections/LookingFor";
+import ConversationStarters from "./Sections/ConversationStarters";
+import { updateUserProfile } from "@/utils/api";
+import { useState } from "react";
+import { useRouter } from "expo-router";
+
+const sectionMapping: { label: string; key: keyof UserProfile }[] = [
+  { label: "Interests", key: "showInterests" },
+  { label: "Personality", key: "showTraits" },
+  { label: "Favorites", key: "showFavorites" },
+  { label: "Looking For", key: "showLookingFor" },
+  { label: "Conversation Starters", key: "showConversationStarters" },
+];
+
+type Props = {
+  profile: UserProfile;
+};
+
+export default function EditProfile({ profile }: Props) {
+  const profileForForm = normalProfileToFormProfile(profile);
+
+  const { control, watch, handleSubmit } = useForm<FormUserProfile>({
+    defaultValues: {
+      ...profileForForm,
+      ...(!profileForForm.interests || profileForForm.interests.length === 0
+        ? { interests: [{ value: "" }] }
+        : {}),
+      ...(!profileForForm.traits || profileForForm.traits.length === 0
+        ? { traits: [{ trait: "", description: "" }] }
+        : {}),
+      ...(!profileForForm.favorites || profileForForm.favorites.length === 0
+        ? { favorites: [{ category: "", item: "" }] }
+        : {}),
+      ...(!profileForForm.conversationStarters ||
+      profileForForm.conversationStarters.length === 0
+        ? { conversationStarters: [{ value: "" }] }
+        : {}),
+    },
+  });
+  const router = useRouter();
+  const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
+
+  function onSubmit(data: FormUserProfile) {
+    const dataToSubmit = formProfileToNormalProfile(data);
+    setSaveButtonDisabled(true);
+    updateUserProfile(dataToSubmit)
+      .then(router.back)
+      .catch((error) => {
+        console.error(error);
+        setSaveButtonDisabled(false);
+      });
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      <PageBackground contentContainerStyle={{ paddingBottom: 80 }}>
+        <Card>
+          <CardHeader icon="person-outline">Basic Info</CardHeader>
+          <View style={styles.pfpContainer}>
+            <View style={styles.pfp} />
+            <Text style={styles.pfpText}>Tap to change your photo</Text>
+          </View>
+          <Controller
+            name="name"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                label="Name"
+                placeholder="Name"
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
+          <TextInput
+            label="Location"
+            placeholder="Location"
+            value="not set up yet"
+          />
+          <Controller
+            name="bio"
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                label="Bio"
+                placeholder="Bio"
+                multiline
+                style={{
+                  height: 80,
+                }}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
+        </Card>
+        <Card>
+          <View style={styles.descriptionHeader}>
+            <CardHeader icon="brush-outline">Profile Sections</CardHeader>
+            <Text style={styles.description}>
+              Choose what to show on your profile
+            </Text>
+          </View>
+          {sectionMapping.map(({ label, key }) => (
+            <Controller
+              key={key}
+              name={key}
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <SwitchRow
+                  label={label}
+                  value={value as boolean | undefined}
+                  onValueChange={onChange}
+                />
+              )}
+            />
+          ))}
+        </Card>
+        {watch("showInterests") ? <Interests control={control} /> : null}
+        {watch("showTraits") ? <Traits control={control} /> : null}
+        {watch("showFavorites") ? <Favorites control={control} /> : null}
+        {watch("showLookingFor") ? <LookingFor control={control} /> : null}
+        {watch("showConversationStarters") ? (
+          <ConversationStarters control={control} />
+        ) : null}
+        {/* TODO: recent spots here when i figure out how to handle it */}
+      </PageBackground>
+      <Button
+        style={styles.saveButton}
+        variant="green"
+        icon="save-outline"
+        onPress={handleSubmit(onSubmit)}
+        disabled={saveButtonDisabled}
+      >
+        Save changes
+      </Button>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  pfpContainer: {
+    alignItems: "center",
+    gap: 10,
+  },
+  pfp: {
+    width: 90,
+    height: 90,
+    backgroundColor: "#eaeaea",
+    borderRadius: 999,
+  },
+  pfpText: {
+    color: "#4b5563",
+  },
+  descriptionHeader: {
+    gap: 6,
+  },
+  description: {
+    fontSize: 16,
+    color: "#4b5563",
+  },
+  saveButton: {
+    height: 44,
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+  },
+});
