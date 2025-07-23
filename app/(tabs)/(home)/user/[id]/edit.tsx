@@ -92,9 +92,7 @@ export default function EditPage() {
 
   return (
     <View style={{ flex: 1 }}>
-      <PageBackground
-        contentContainerStyle={{ paddingBottom: 80 }}
-      >
+      <PageBackground contentContainerStyle={{ paddingBottom: 80 }}>
         <Card>
           <CardHeader icon="person-outline">Basic Info</CardHeader>
           <View style={styles.pfpContainer}>

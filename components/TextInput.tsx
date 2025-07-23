@@ -61,5 +61,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     fontSize: 16,
     backgroundColor: "#fff",
+    height: 44,
   },
 });

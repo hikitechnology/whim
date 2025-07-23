@@ -1,5 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Tabs } from "expo-router";
+import { Button } from "react-native";
 
 export default function TabsLayout() {
   return (
@@ -29,6 +30,19 @@ export default function TabsLayout() {
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
                 name={focused ? "people" : "people-outline"}
+                size={size}
+                color={color}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="(profile)"
+          options={{
+            title: "Profile",
+            tabBarIcon: ({ focused, color, size }) => (
+              <Ionicons
+                name={focused ? "person" : "person-outline"}
                 size={size}
                 color={color}
               />
