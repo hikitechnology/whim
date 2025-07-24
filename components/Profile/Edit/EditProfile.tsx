@@ -17,8 +17,9 @@ import Favorites from "./Sections/Favorites";
 import LookingFor from "./Sections/LookingFor";
 import ConversationStarters from "./Sections/ConversationStarters";
 import { updateUserProfile } from "@/utils/api";
-import { useState } from "react";
 import { useRouter } from "expo-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import React from "react";
 
 const sectionMapping: { label: string; key: keyof UserProfile }[] = [
   { label: "Interests", key: "showInterests" },
@@ -32,7 +33,25 @@ type Props = {
   profile: UserProfile;
 };
 
-export default function EditProfile({ profile }: Props) {
+function EditProfile({ profile }: Props) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { isPending, mutate } = useMutation({
+    mutationFn: (data: FormUserProfile) => {
+      const dataToSubmit = formProfileToNormalProfile(data);
+      return updateUserProfile(dataToSubmit);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["profile", profile.uid],
+      });
+      router.back();
+    },
+    onError: (error) => {
+      console.error("Error updating profile", error);
+    },
+  });
+
   const profileForForm = normalProfileToFormProfile(profile);
 
   const { control, watch, handleSubmit } = useForm<FormUserProfile>({
@@ -53,19 +72,6 @@ export default function EditProfile({ profile }: Props) {
         : {}),
     },
   });
-  const router = useRouter();
-  const [saveButtonDisabled, setSaveButtonDisabled] = useState(false);
-
-  function onSubmit(data: FormUserProfile) {
-    const dataToSubmit = formProfileToNormalProfile(data);
-    setSaveButtonDisabled(true);
-    updateUserProfile(dataToSubmit)
-      .then(router.back)
-      .catch((error) => {
-        console.error(error);
-        setSaveButtonDisabled(false);
-      });
-  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -145,8 +151,8 @@ export default function EditProfile({ profile }: Props) {
         style={styles.saveButton}
         variant="green"
         icon="save-outline"
-        onPress={handleSubmit(onSubmit)}
-        disabled={saveButtonDisabled}
+        onPress={handleSubmit((data) => mutate(data))}
+        disabled={isPending}
       >
         Save changes
       </Button>
@@ -183,3 +189,5 @@ const styles = StyleSheet.create({
     right: 20,
   },
 });
+
+export default React.memo(EditProfile);

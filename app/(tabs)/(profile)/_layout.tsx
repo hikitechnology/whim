@@ -1,10 +1,7 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, useRouter } from "expo-router";
-import { Button } from "react-native";
+import { Stack } from "expo-router";
 
 export default function ProfileLayout() {
-  const router = useRouter();
-
   return (
     <Stack
       screenOptions={{
@@ -27,13 +24,6 @@ export default function ProfileLayout() {
         name="index"
         options={{
           title: "My Profile",
-          headerRight: ({ tintColor }) => (
-            <Button
-              title="Edit"
-              onPress={() => router.navigate("/edit")}
-              color={tintColor}
-            />
-          ),
         }}
       />
       <Stack.Screen

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { getItem, setItem, deleteItemAsync } from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type PersistentState = {
   hasCompletedOnboarding: boolean;
@@ -27,11 +27,7 @@ export const usePersistentStore = create(
     }),
     {
       name: "persistent-store",
-      storage: createJSONStorage(() => ({
-        setItem,
-        getItem,
-        removeItem: deleteItemAsync,
-      })),
+      storage: createJSONStorage(() => AsyncStorage),
     },
   ),
 );
