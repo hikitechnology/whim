@@ -4,14 +4,29 @@ import useAuthContext from "@/hooks/useAuthContext";
 import { usePersistentStore } from "@/utils/persistentStore";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
+import { QueryClient } from "@tanstack/react-query";
+import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 
 SplashScreen.preventAutoHideAsync();
 
+const queryClient = new QueryClient();
+
+const asyncStoragePersister = createAsyncStoragePersister({
+  storage: AsyncStorage,
+});
+
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <RootNavigator />
-    </AuthProvider>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: asyncStoragePersister }}
+    >
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
+    </PersistQueryClientProvider>
   );
 }
 

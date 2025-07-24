@@ -4,14 +4,14 @@ import Slides from "@/components/Slides";
 import TextInput from "@/components/TextInput";
 import PfpSelector from "../PfpSelector";
 import useAuthContext from "@/hooks/useAuthContext";
-import { useState } from "react";
+import React, { useState } from "react";
 import { updateUserProfile } from "@/utils/api";
 
 type Props = {
   onNext: () => void;
 };
 
-export default function Profile({ onNext }: Props) {
+function Profile({ onNext }: Props) {
   const { user } = useAuthContext();
 
   const [name, setName] = useState("");
@@ -63,3 +63,5 @@ export default function Profile({ onNext }: Props) {
     </Slides.Slide>
   );
 }
+
+export default React.memo(Profile);

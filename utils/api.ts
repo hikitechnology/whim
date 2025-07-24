@@ -19,14 +19,21 @@ async function apiFetch(url: string, options: RequestInit = {}) {
 
 export async function getUserProfile(id: string): Promise<UserProfile> {
   const response = await apiFetch(`/user/${id}`);
+  if (!response.ok) {
+    throw new Error("User profile network response not ok");
+  }
   return response.json();
 }
 
 export async function updateUserProfile(
   updatedProfile: Partial<UserProfile> & Pick<UserProfile, "uid">,
 ) {
-  return apiFetch(`/user/${updatedProfile.uid}/update`, {
+  const response = await apiFetch(`/user/${updatedProfile.uid}/update`, {
     body: JSON.stringify(updatedProfile),
     method: "patch",
   });
+  if (!response.ok) {
+    throw new Error("User profile update network response was not ok");
+  }
+  return response;
 }

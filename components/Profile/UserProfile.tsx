@@ -7,12 +7,18 @@ import IconText from "@/components/IconText";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import PageBackground from "@/components/PageBackground";
 import CardHeader from "@/components/CardHeader";
+import useAuthenticatedUser from "@/hooks/useAuthenticatedUser";
+import { useRouter } from "expo-router";
 
 type Props = {
   profile: UserProfileType;
 };
 
 export default function UserProfile({ profile }: Props) {
+  const router = useRouter();
+  const user = useAuthenticatedUser();
+  const isOwnProfile = profile.uid === user.uid;
+
   return (
     <PageBackground>
       <Card>
@@ -28,18 +34,22 @@ export default function UserProfile({ profile }: Props) {
           </IconText>
           <Text style={styles.bio}>{profile.bio}</Text>
         </View>
-        <View style={styles.interactions}>
-          <Button
-            variant="primary"
-            icon="hand-left-outline"
-            style={{ flex: 1 }}
-          >
-            Wave
-          </Button>
-          <Button icon="chatbubble-outline" style={{ flex: 1 }}>
-            Chat
-          </Button>
-        </View>
+        {!isOwnProfile ? (
+          <View style={styles.interactions}>
+            <Button
+              variant="primary"
+              icon="hand-left-outline"
+              style={{ flex: 1 }}
+            >
+              Wave
+            </Button>
+            <Button icon="chatbubble-outline" style={{ flex: 1 }}>
+              Chat
+            </Button>
+          </View>
+        ) : (
+          <Button onPress={() => router.navigate("/edit")}>Edit Profile</Button>
+        )}
       </Card>
       {profile.interests && profile.interests.length > 0 ? (
         <Card>
