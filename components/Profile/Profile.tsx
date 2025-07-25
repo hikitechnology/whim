@@ -8,13 +8,14 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import PageBackground from "@/components/PageBackground";
 import CardHeader from "@/components/CardHeader";
 import useAuthenticatedUser from "@/hooks/useAuthenticatedUser";
-import { useRouter } from "expo-router";
+import { Href, useRouter } from "expo-router";
 
 type Props = {
   profile: UserProfileType;
+  editPagePath: Href;
 };
 
-export default function UserProfile({ profile }: Props) {
+export default function Profile({ profile, editPagePath }: Props) {
   const router = useRouter();
   const user = useAuthenticatedUser();
   const isOwnProfile = profile.uid === user.uid;
@@ -48,7 +49,9 @@ export default function UserProfile({ profile }: Props) {
             </Button>
           </View>
         ) : (
-          <Button onPress={() => router.navigate("/edit")}>Edit Profile</Button>
+          <Button onPress={() => router.navigate(editPagePath)}>
+            Edit Profile
+          </Button>
         )}
       </Card>
       {profile.interests && profile.interests.length > 0 ? (

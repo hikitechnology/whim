@@ -37,3 +37,8 @@ export async function updateUserProfile(
   }
   return response;
 }
+
+export async function getAllUsers(): Promise<UserProfile[]> {
+  const response = await apiFetch("/user/all");
+  return response.json();
+}
