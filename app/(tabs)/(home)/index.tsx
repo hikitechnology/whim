@@ -9,12 +9,11 @@ import { useSharedValue } from "react-native-reanimated";
 
 import Overview, { BASE_OVERVIEW_HEIGHT } from "@/components/Home/Overview";
 import UserCard from "@/components/Home/UserCard";
-import { getRandomUsers } from "@/placeholder/users";
 import { getIdToken } from "@react-native-firebase/auth";
 import useAuthContext from "@/hooks/useAuthContext";
-import { useEffect } from "react";
-
-const users = getRandomUsers(10);
+import { useEffect, useState } from "react";
+import { UserProfile } from "@/types/UserProfile";
+import { getAllUsers } from "@/utils/api";
 
 export default function Index() {
   const { user } = useAuthContext();
@@ -31,6 +30,12 @@ export default function Index() {
     scrollOffset.value = event.nativeEvent.contentOffset.y;
   };
 
+  const [users, setUsers] = useState<UserProfile[]>([]);
+
+  useEffect(() => {
+    getAllUsers().then(setUsers);
+  }, []);
+
   return (
     <View style={styles.container}>
       <Overview scrollOffset={scrollOffset} />
@@ -46,7 +51,7 @@ export default function Index() {
             distance={item.distance}
             timeTogether={item.timeTogether}
             interests={item.interests}
-            userId={item.id}
+            userId={item.uid}
           />
         )}
         style={styles.scrollContainer}

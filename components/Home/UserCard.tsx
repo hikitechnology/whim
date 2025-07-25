@@ -13,7 +13,7 @@ type Props = {
   timeTogether?: number;
   interests?: string[];
   mutualFriendsCount?: number;
-  userId?: number;
+  userId?: string;
 };
 
 function UserCard(props: Props) {

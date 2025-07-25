@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import AuthProvider from "@/context/AuthContext";
 import useAuthContext from "@/hooks/useAuthContext";
-import { usePersistentStore } from "@/utils/persistentStore";
+import { usePersistentStore } from "@/hooks/persistentStore";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { QueryClient } from "@tanstack/react-query";

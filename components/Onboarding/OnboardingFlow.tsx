@@ -1,6 +1,6 @@
 import Header from "@/components/Onboarding/Header";
 import Slides from "@/components/Slides";
-import { usePersistentStore } from "@/utils/persistentStore";
+import { usePersistentStore } from "@/hooks/persistentStore";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Phone from "./Slides/Phone";
