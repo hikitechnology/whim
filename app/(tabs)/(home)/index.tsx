@@ -45,7 +45,7 @@ export default function Index() {
           <UserCard
             showPfp={true}
             name={item.name}
-            location={item.location}
+            // location={item.location}
             mutualFriendsCount={item.mutualFriends}
             time={item.timeMet}
             distance={item.distance}

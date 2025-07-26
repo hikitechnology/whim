@@ -11,16 +11,11 @@ import * as Location from "expo-location";
 import { Button, StyleSheet, Text, View } from "react-native";
 import * as TaskManager from "expo-task-manager";
 import { useState } from "react";
-import { updateLocation } from "@/utils/api";
-import { getAuth } from "@react-native-firebase/auth";
+import { usePersistentStore } from "@/hooks/usePersistentStore";
+import { syncLocation } from "@/utils/api";
+import { UserProfile } from "@/types/UserProfile";
 
 const LOCATION_TASK_NAME = "background-location-task";
-
-async function sendMessage(coords: { x: number; y: number }) {
-  const uid = getAuth().currentUser!.uid;
-  console.log(coords);
-  await updateLocation(uid, coords);
-}
 
 type LocationTaskData = {
   locations: Location.LocationObject[];
@@ -34,10 +29,18 @@ TaskManager.defineTask<LocationTaskData>(
     }
     if (data) {
       const { locations } = data;
-      sendMessage({
+      const nearbyUsers: UserProfile[] = await syncLocation({
         x: locations[0].coords.latitude,
         y: locations[0].coords.longitude,
       });
+      console.log(nearbyUsers);
+
+      const connectionsForState = nearbyUsers.map((user) => ({
+        uid: user.uid,
+        name: user.name,
+      }));
+
+      usePersistentStore.getState().updateConnections(connectionsForState);
     }
   },
 );
@@ -46,6 +49,8 @@ export default function LocationPage() {
   const [status, setStatus] = useState<string>(
     "Location permission has not been granted",
   );
+
+  const { connections } = usePersistentStore();
 
   async function requestPermission() {
     const { status } = await Location.requestBackgroundPermissionsAsync();
@@ -70,6 +75,9 @@ export default function LocationPage() {
       <Text style={styles.text}>{status}</Text>
       <Button title="Enable location tracking" onPress={enableTracking} />
       <Button title="Disable location tracking" onPress={disableTracking} />
+      <Text style={styles.text}>
+        Nearby users: {JSON.stringify(connections)}
+      </Text>
     </View>
   );
 }
