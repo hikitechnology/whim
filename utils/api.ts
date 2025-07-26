@@ -1,3 +1,4 @@
+import { LocationUpdate } from "@/types/Location";
 import { UserProfile } from "@/types/UserProfile";
 import { getAuth, getIdToken } from "@react-native-firebase/auth";
 
@@ -56,7 +57,10 @@ export async function uploadImages(userId: string, images: File[]) {
   return response;
 }
 
-export async function syncLocation(coords: { x: number; y: number }) {
+export async function syncLocation(coords: {
+  x: number;
+  y: number;
+}): Promise<LocationUpdate[]> {
   const response = await apiFetch("/location/sync", {
     method: "post",
     body: JSON.stringify(coords),
