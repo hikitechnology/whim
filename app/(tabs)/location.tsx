@@ -13,7 +13,6 @@ import * as TaskManager from "expo-task-manager";
 import { useState } from "react";
 import { usePersistentStore } from "@/hooks/usePersistentStore";
 import { syncLocation } from "@/utils/api";
-import { UserProfile } from "@/types/UserProfile";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -29,18 +28,12 @@ TaskManager.defineTask<LocationTaskData>(
     }
     if (data) {
       const { locations } = data;
-      const nearbyUsers: UserProfile[] = await syncLocation({
-        x: locations[0].coords.latitude,
-        y: locations[0].coords.longitude,
+      const nearbyUsers = await syncLocation({
+        x: locations[0].coords.longitude,
+        y: locations[0].coords.latitude,
       });
-      console.log(nearbyUsers);
 
-      const connectionsForState = nearbyUsers.map((user) => ({
-        uid: user.uid,
-        name: user.name,
-      }));
-
-      usePersistentStore.getState().updateConnections(connectionsForState);
+      usePersistentStore.getState().updateConnections(nearbyUsers);
     }
   },
 );
@@ -50,7 +43,8 @@ export default function LocationPage() {
     "Location permission has not been granted",
   );
 
-  const { connections } = usePersistentStore();
+  const { connections, resetConnections, endAllConnectionsNow } =
+    usePersistentStore();
 
   async function requestPermission() {
     const { status } = await Location.requestBackgroundPermissionsAsync();
@@ -68,16 +62,47 @@ export default function LocationPage() {
 
   async function disableTracking() {
     await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+    endAllConnectionsNow();
   }
+
+  const connectionsList = Object.keys(connections).map((key) => ({
+    uid: key,
+    ...connections[key],
+  }));
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{status}</Text>
       <Button title="Enable location tracking" onPress={enableTracking} />
       <Button title="Disable location tracking" onPress={disableTracking} />
-      <Text style={styles.text}>
-        Nearby users: {JSON.stringify(connections)}
-      </Text>
+      <Button title="Reset connections" onPress={resetConnections} />
+      <View style={styles.nearbyList}>
+        {connectionsList.map((connection) => (
+          <View
+            style={[
+              styles.connection,
+              !connection.endTime && styles.connActive,
+            ]}
+            key={connection.uid}
+          >
+            <Text>UID: {connection.uid}</Text>
+            <Text>GPS Coords: {JSON.stringify(connection.location)}</Text>
+            <Text>Distance: {connection.distance} meters</Text>
+            <Text>
+              Encounter started:{" "}
+              {new Date(connection.startTime).toLocaleTimeString()}
+            </Text>
+            {connection.endTime ? (
+              <Text>
+                Encounter ended:{" "}
+                {new Date(connection.endTime).toLocaleTimeString()}
+              </Text>
+            ) : (
+              <Text>Currently active</Text>
+            )}
+          </View>
+        ))}
+      </View>
     </View>
   );
 }
@@ -90,5 +115,15 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
+  },
+  nearbyList: {
+    padding: 8,
+  },
+  connection: {
+    borderWidth: 1,
+    padding: 4,
+  },
+  connActive: {
+    backgroundColor: "#c2fcc0",
   },
 });
