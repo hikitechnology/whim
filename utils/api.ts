@@ -42,3 +42,27 @@ export async function getAllUsers(): Promise<UserProfile[]> {
   const response = await apiFetch("/user/all");
   return response.json();
 }
+
+export async function uploadImages(userId: string, images: File[]) {
+  const formData = new FormData();
+  images.forEach((image) => formData.append("images", image));
+  const response = await apiFetch(`/user/${userId}/upload/image`, {
+    method: "post",
+    body: formData,
+  });
+  if (!response.ok) {
+    throw new Error("Image upload network response was not ok");
+  }
+  return response;
+}
+
+export async function syncLocation(coords: { x: number; y: number }) {
+  const response = await apiFetch("/location/sync", {
+    method: "post",
+    body: JSON.stringify(coords),
+  });
+  if (!response.ok) {
+    throw new Error("Location sync network response was not OK");
+  }
+  return response.json();
+}
