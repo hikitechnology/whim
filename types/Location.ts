@@ -5,4 +5,6 @@ export type LocationUpdate = {
     x: number;
     y: number;
   };
+  name: string;
+  interests?: string[];
 };

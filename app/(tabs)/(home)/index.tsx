@@ -11,12 +11,13 @@ import Overview, { BASE_OVERVIEW_HEIGHT } from "@/components/Home/Overview";
 import UserCard from "@/components/Home/UserCard";
 import { getIdToken } from "@react-native-firebase/auth";
 import useAuthContext from "@/hooks/useAuthContext";
-import { useEffect, useState } from "react";
-import { UserProfile } from "@/types/UserProfile";
-import { getAllUsers } from "@/utils/api";
+import { useEffect } from "react";
+import { usePersistentStore } from "@/hooks/usePersistentStore";
+import { metersToFeet } from "@/utils/location";
 
 export default function Index() {
   const { user } = useAuthContext();
+  const { connections } = usePersistentStore();
 
   useEffect(() => {
     getIdToken(user!).then((token) =>
@@ -30,26 +31,23 @@ export default function Index() {
     scrollOffset.value = event.nativeEvent.contentOffset.y;
   };
 
-  const [users, setUsers] = useState<UserProfile[]>([]);
-
-  useEffect(() => {
-    getAllUsers().then(setUsers);
-  }, []);
-
   return (
     <View style={styles.container}>
       <Overview scrollOffset={scrollOffset} />
       <FlatList
-        data={users}
+        data={connections}
         renderItem={({ item }) => (
           <UserCard
-            showPfp={true}
             name={item.name}
-            // location={item.location}
-            mutualFriendsCount={item.mutualFriends}
-            time={item.timeMet}
-            distance={item.distance}
-            timeTogether={item.timeTogether}
+            location={JSON.stringify(item.location)}
+            // mutualFriendsCount={item.mutualFriends}
+            time={new Date(item.startTime).toLocaleTimeString([], {
+              timeStyle: "short",
+            })}
+            distance={Math.floor(metersToFeet(item.distance)) + " ft away"}
+            timeTogether={Math.floor(
+              ((item.endTime ?? Date.now()) - item.startTime) / 60000,
+            )}
             interests={item.interests}
             userId={item.uid}
           />

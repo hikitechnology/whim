@@ -1,5 +1,5 @@
 import { LocationUpdate } from "@/types/Location";
-import { UserProfile } from "@/types/UserProfile";
+import { BasicUserProfile, UserProfile } from "@/types/UserProfile";
 import { getAuth, getIdToken } from "@react-native-firebase/auth";
 
 async function apiFetch(url: string, options: RequestInit = {}) {
@@ -39,11 +39,6 @@ export async function updateUserProfile(
   return response;
 }
 
-export async function getAllUsers(): Promise<UserProfile[]> {
-  const response = await apiFetch("/user/all");
-  return response.json();
-}
-
 export async function uploadImages(userId: string, images: File[]) {
   const formData = new FormData();
   images.forEach((image) => formData.append("images", image));
@@ -67,6 +62,16 @@ export async function syncLocation(coords: {
   });
   if (!response.ok) {
     throw new Error("Location sync network response was not OK");
+  }
+  return response.json();
+}
+
+export async function getBasicUserProfile(
+  id: string,
+): Promise<BasicUserProfile> {
+  const response = await apiFetch(`/user/${id}/basic`);
+  if (!response.ok) {
+    throw new Error("Basic user profile response was not ok");
   }
   return response.json();
 }

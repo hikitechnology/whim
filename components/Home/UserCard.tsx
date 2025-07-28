@@ -6,14 +6,13 @@ import { useRouter } from "expo-router";
 
 type Props = {
   name?: string;
-  showPfp?: boolean;
   location?: string;
   time?: string;
-  distance?: number;
+  distance?: string;
   timeTogether?: number;
   interests?: string[];
   mutualFriendsCount?: number;
-  userId?: string;
+  userId: string;
 };
 
 function UserCard(props: Props) {
@@ -25,7 +24,7 @@ function UserCard(props: Props) {
         {props.name ? (
           <UserCardBase.Name>{props.name}</UserCardBase.Name>
         ) : null}
-        {props.showPfp ? <UserCardBase.ProfilePic /> : null}
+        <UserCardBase.ProfilePic />
         {props.mutualFriendsCount && props.mutualFriendsCount > 0 ? (
           <UserCardBase.Badge>
             {props.mutualFriendsCount} mutual friend
@@ -45,10 +44,10 @@ function UserCard(props: Props) {
           ) : null}
           {props.distance ? (
             <UserCardBase.StatItem icon="location-outline">
-              {props.distance} ft away
+              {props.distance}
             </UserCardBase.StatItem>
           ) : null}
-          {props.timeTogether ? (
+          {props.timeTogether !== undefined ? (
             <UserCardBase.StatItem icon="hourglass-outline">
               {props.timeTogether} min together
             </UserCardBase.StatItem>

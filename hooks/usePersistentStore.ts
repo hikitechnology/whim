@@ -6,16 +6,18 @@ import { LocationUpdate } from "@/types/Location";
 type PersistentState = {
   hasCompletedOnboarding: boolean;
   connections: {
-    [uid: string]: {
-      startTime: number;
-      endTime?: number;
-      distance: number;
-      location: {
-        x: number;
-        y: number;
-      };
+    uid: string;
+    startTime: number;
+    endTime?: number;
+    distance: number;
+    location: {
+      x: number;
+      y: number;
     };
-  };
+    name: string;
+    interests?: string[];
+  }[];
+
   completeOnboarding: () => void;
   resetOnboarding: () => void;
   updateConnections: (locationUpdates: LocationUpdate[]) => void;
@@ -27,7 +29,7 @@ export const usePersistentStore = create(
   persist<PersistentState>(
     (set) => ({
       hasCompletedOnboarding: false,
-      connections: {},
+      connections: [],
       completeOnboarding: () => {
         set((state) => ({
           ...state,
@@ -41,35 +43,37 @@ export const usePersistentStore = create(
         }));
       },
       updateConnections: (locationUpdates) => {
-        console.log("location updates", locationUpdates);
-
         set((state) => {
-          const newConnections = locationUpdates.filter(
-            (update) =>
-              state.connections[update.uid] === undefined ||
-              state.connections[update.uid].endTime !== undefined,
-          );
-          const noLongerNear = Object.keys(state.connections).filter(
-            (uid) =>
-              state.connections[uid].endTime === undefined &&
-              !locationUpdates.some((conn) => conn.uid === uid),
-          );
+          let updatedConnections = [...state.connections];
 
-          const updatedConnections = { ...state.connections };
-
-          for (const connection of newConnections) {
-            updatedConnections[connection.uid] = {
+          locationUpdates.forEach((update) => {
+            const existingIndex = updatedConnections.findIndex(
+              (conn) => conn.uid === update.uid,
+            );
+            const updatedConnection = {
+              uid: update.uid,
               startTime: Date.now(),
-              distance: connection.distance,
-              location: connection.coordinates,
+              location: update.coordinates,
+              distance: update.distance,
+              name: update.name,
+              interests: update.interests,
             };
-          }
 
-          for (const key in updatedConnections) {
-            if (noLongerNear.includes(key)) {
-              updatedConnections[key].endTime = Date.now();
+            if (existingIndex === -1) {
+              updatedConnections.push(updatedConnection);
+            } else {
+              updatedConnections[existingIndex] = updatedConnection;
             }
-          }
+          });
+
+          updatedConnections = updatedConnections.map((conn) => ({
+            ...conn,
+            endTime:
+              !locationUpdates.some((update) => update.uid === conn.uid) &&
+              !conn.endTime
+                ? Date.now()
+                : conn.endTime,
+          }));
 
           return {
             ...state,
@@ -78,24 +82,18 @@ export const usePersistentStore = create(
         });
       },
       endAllConnectionsNow: () => {
-        set((state) => {
-          const activeConnections = Object.keys(state.connections).filter(
-            (uid) => !state.connections[uid].endTime,
-          );
-          const updatedConnections = { ...state.connections };
-          activeConnections.forEach(
-            (uid) => (updatedConnections[uid].endTime = Date.now()),
-          );
-          return {
-            ...state,
-            connections: updatedConnections,
-          };
-        });
+        set((state) => ({
+          ...state,
+          connections: [...state.connections].map((conn) => ({
+            ...conn,
+            endTime: conn.endTime ?? Date.now(),
+          })),
+        }));
       },
       resetConnections: () => {
         set((state) => ({
           ...state,
-          connections: {},
+          connections: [],
         }));
       },
     }),
