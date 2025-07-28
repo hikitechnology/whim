@@ -65,11 +65,6 @@ export default function LocationPage() {
     endAllConnectionsNow();
   }
 
-  const connectionsList = Object.keys(connections).map((key) => ({
-    uid: key,
-    ...connections[key],
-  }));
-
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{status}</Text>
@@ -77,7 +72,7 @@ export default function LocationPage() {
       <Button title="Disable location tracking" onPress={disableTracking} />
       <Button title="Reset connections" onPress={resetConnections} />
       <View style={styles.nearbyList}>
-        {connectionsList.map((connection) => (
+        {connections.map((connection) => (
           <View
             style={[
               styles.connection,
@@ -86,6 +81,8 @@ export default function LocationPage() {
             key={connection.uid}
           >
             <Text>UID: {connection.uid}</Text>
+            <Text>Name: {connection.name}</Text>
+            <Text>Interests: {JSON.stringify(connection.interests)}</Text>
             <Text>GPS Coords: {JSON.stringify(connection.location)}</Text>
             <Text>Distance: {connection.distance} meters</Text>
             <Text>

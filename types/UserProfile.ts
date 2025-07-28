@@ -33,3 +33,9 @@ export type FormUserProfile = Omit<
   interests?: { value: string }[];
   conversationStarters?: { value: string }[];
 };
+
+export type BasicUserProfile = {
+  uid: string;
+  name: string;
+  interests?: string[];
+};
