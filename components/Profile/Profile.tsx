@@ -9,6 +9,7 @@ import PageBackground from "@/components/PageBackground";
 import CardHeader from "@/components/CardHeader";
 import useAuthenticatedUser from "@/hooks/useAuthenticatedUser";
 import { Href, useRouter } from "expo-router";
+import { usePersistentStore } from "@/hooks/usePersistentStore";
 
 type Props = {
   profile: UserProfileType;
@@ -19,6 +20,10 @@ export default function Profile({ profile, editPagePath }: Props) {
   const router = useRouter();
   const user = useAuthenticatedUser();
   const isOwnProfile = profile.uid === user.uid;
+  const metAt = usePersistentStore(
+    (state) =>
+      state.connections.find((conn) => conn.uid === profile.uid)?.locationName,
+  );
 
   return (
     <PageBackground>
@@ -26,13 +31,15 @@ export default function Profile({ profile, editPagePath }: Props) {
         <View style={styles.userOverview}>
           <View style={styles.pfp} />
           <Text style={styles.name}>{profile.name}</Text>
-          <IconText
-            icon="location-outline"
-            iconColor="#d97706"
-            style={styles.location}
-          >
-            location here
-          </IconText>
+          {metAt ? (
+            <IconText
+              icon="location-outline"
+              iconColor="#d97706"
+              style={styles.location}
+            >
+              Met near {metAt}
+            </IconText>
+          ) : null}
           <Text style={styles.bio}>{profile.bio}</Text>
         </View>
         {!isOwnProfile ? (
@@ -54,7 +61,9 @@ export default function Profile({ profile, editPagePath }: Props) {
           </Button>
         )}
       </Card>
-      {profile.interests && profile.interests.length > 0 ? (
+      {profile.interests &&
+      profile.interests.length > 0 &&
+      profile.interests.some((item) => item !== "") ? (
         <Card>
           <CardHeader icon="star-outline">Things I Love</CardHeader>
           <View style={styles.interests}>
@@ -71,7 +80,11 @@ export default function Profile({ profile, editPagePath }: Props) {
           </View>
         </Card>
       ) : null}
-      {profile.traits && profile.traits.length > 0 ? (
+      {profile.traits &&
+      profile.traits.length > 0 &&
+      profile.traits.some(
+        (item) => item.trait !== "" || item.description !== "",
+      ) ? (
         <Card>
           <CardHeader icon="sparkles-outline">My Vibe</CardHeader>
           <View style={styles.blurbsList}>
@@ -91,7 +104,11 @@ export default function Profile({ profile, editPagePath }: Props) {
           </View>
         </Card>
       ) : null}
-      {profile.favorites && profile.favorites.length > 0 ? (
+      {profile.favorites &&
+      profile.favorites.length > 0 &&
+      profile.favorites.some(
+        (item) => item.item !== "" || item.category !== "",
+      ) ? (
         <Card>
           <CardHeader icon="heart-outline">Current Favorites</CardHeader>
           <View style={styles.blurbsList}>
@@ -139,7 +156,8 @@ export default function Profile({ profile, editPagePath }: Props) {
         </Card>
       ) : null}
       {profile.conversationStarters &&
-      profile.conversationStarters.length > 0 ? (
+      profile.conversationStarters.length > 0 &&
+      profile.conversationStarters.some((item) => item !== "") ? (
         <Card>
           <CardHeader icon="chatbubble-outline">
             Let&apos;s Talk About...

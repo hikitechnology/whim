@@ -1,0 +1,1 @@
+export const LOCATION_CACHE_RADIUS_METERS = 50;

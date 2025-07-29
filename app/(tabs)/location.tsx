@@ -13,6 +13,7 @@ import * as TaskManager from "expo-task-manager";
 import { useState } from "react";
 import { usePersistentStore } from "@/hooks/usePersistentStore";
 import { syncLocation } from "@/utils/api";
+import { LocalLocationUpdate } from "@/types/Location";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -28,10 +29,22 @@ TaskManager.defineTask<LocationTaskData>(
     }
     if (data) {
       const { locations } = data;
-      const nearbyUsers = await syncLocation({
+      const syncResults = await syncLocation({
         x: locations[0].coords.longitude,
         y: locations[0].coords.latitude,
       });
+
+      const nearbyUsers: LocalLocationUpdate[] = [];
+
+      for (const result of syncResults) {
+        nearbyUsers.push({
+          ...result,
+          locationName: await usePersistentStore.getState().getLocationName({
+            latitude: result.coordinates.y,
+            longitude: result.coordinates.x,
+          }),
+        });
+      }
 
       usePersistentStore.getState().updateConnections(nearbyUsers);
     }
@@ -39,17 +52,21 @@ TaskManager.defineTask<LocationTaskData>(
 );
 
 export default function LocationPage() {
-  const [status, setStatus] = useState<string>(
-    "Location permission has not been granted",
-  );
+  const [status, setStatus] = useState<string>("Location tracking disabled");
 
-  const { connections, resetConnections, endAllConnectionsNow } =
-    usePersistentStore();
+  const {
+    connections,
+    resetConnections,
+    endAllConnectionsNow,
+    resetLocationCache,
+  } = usePersistentStore();
 
   async function requestPermission() {
     const { status } = await Location.requestBackgroundPermissionsAsync();
     if (status === "granted") {
-      setStatus("Location permission granted");
+      setStatus("Location tracking enabled");
+    } else {
+      setStatus("Location permission request failed");
     }
   }
 
@@ -71,6 +88,7 @@ export default function LocationPage() {
       <Button title="Enable location tracking" onPress={enableTracking} />
       <Button title="Disable location tracking" onPress={disableTracking} />
       <Button title="Reset connections" onPress={resetConnections} />
+      <Button title="Reset location cache" onPress={resetLocationCache} />
       <View style={styles.nearbyList}>
         {connections.map((connection) => (
           <View
@@ -83,7 +101,7 @@ export default function LocationPage() {
             <Text>UID: {connection.uid}</Text>
             <Text>Name: {connection.name}</Text>
             <Text>Interests: {JSON.stringify(connection.interests)}</Text>
-            <Text>GPS Coords: {JSON.stringify(connection.location)}</Text>
+            <Text>Geocoded location: {connection.locationName}</Text>
             <Text>Distance: {connection.distance} meters</Text>
             <Text>
               Encounter started:{" "}

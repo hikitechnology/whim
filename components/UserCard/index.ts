@@ -7,6 +7,7 @@ import StatsRow from "./StatsRow";
 import StatItem from "./StatItem";
 import InterestsRow from "./InterestsRow";
 import Blurb from "./Blurb";
+import StatIndicator from "./StatIndicator";
 
 export default Object.assign(UserCard, {
   ProfilePic,
@@ -17,4 +18,5 @@ export default Object.assign(UserCard, {
   StatItem,
   InterestsRow,
   Blurb,
+  StatIndicator,
 });
