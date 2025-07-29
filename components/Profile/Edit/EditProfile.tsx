@@ -94,11 +94,6 @@ function EditProfile({ profile }: Props) {
               />
             )}
           />
-          <TextInput
-            label="Location"
-            placeholder="Location"
-            value="not set up yet"
-          />
           <Controller
             name="bio"
             control={control}

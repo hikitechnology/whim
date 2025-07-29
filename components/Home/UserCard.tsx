@@ -9,9 +9,10 @@ type Props = {
   location?: string;
   time?: string;
   distance?: string;
-  timeTogether?: number;
+  timeTogether?: string;
   interests?: string[];
   mutualFriendsCount?: number;
+  currentlyNearby?: boolean;
   userId: string;
 };
 
@@ -47,13 +48,15 @@ function UserCard(props: Props) {
               {props.distance}
             </UserCardBase.StatItem>
           ) : null}
-          {props.timeTogether !== undefined ? (
+          {props.currentlyNearby ? (
+            <UserCardBase.StatIndicator>Nearby now</UserCardBase.StatIndicator>
+          ) : props.timeTogether !== undefined ? (
             <UserCardBase.StatItem icon="hourglass-outline">
-              {props.timeTogether} min together
+              {props.timeTogether}
             </UserCardBase.StatItem>
           ) : null}
         </UserCardBase.StatsRow>
-        {props.interests ? (
+        {props.interests && props.interests.length > 0 ? (
           <UserCardBase.InterestsRow items={props.interests} />
         ) : null}
         <View style={styles.actions}>

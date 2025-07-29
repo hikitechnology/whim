@@ -17,7 +17,7 @@ import { metersToFeet } from "@/utils/location";
 
 export default function Index() {
   const { user } = useAuthContext();
-  const { connections } = usePersistentStore();
+  const connections = usePersistentStore((state) => state.connections);
 
   useEffect(() => {
     getIdToken(user!).then((token) =>
@@ -39,15 +39,18 @@ export default function Index() {
         renderItem={({ item }) => (
           <UserCard
             name={item.name}
-            location={JSON.stringify(item.location)}
+            location={`Near ${item.locationName}`}
             // mutualFriendsCount={item.mutualFriends}
             time={new Date(item.startTime).toLocaleTimeString([], {
               timeStyle: "short",
             })}
             distance={Math.floor(metersToFeet(item.distance)) + " ft away"}
-            timeTogether={Math.floor(
-              ((item.endTime ?? Date.now()) - item.startTime) / 60000,
-            )}
+            timeTogether={
+              Math.floor(
+                ((item.endTime ?? Date.now()) - item.startTime) / 60000,
+              ) + " min together"
+            }
+            currentlyNearby={!item.endTime}
             interests={item.interests}
             userId={item.uid}
           />
