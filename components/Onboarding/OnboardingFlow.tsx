@@ -1,6 +1,5 @@
 import Header from "@/components/Onboarding/Header";
 import Slides from "@/components/Slides";
-import { usePersistentStore } from "@/hooks/usePersistentStore";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Phone from "./Slides/Phone";
@@ -10,6 +9,7 @@ import BackgroundLocation from "./Slides/BackgroundLocation";
 import BackgroundConfirm from "./Slides/BackgroundConfirm";
 import BackgroundReminder from "./Slides/BackgroundReminder";
 import Profile from "./Slides/Profile";
+import { useOnboardingState } from "@/hooks/useOnboardingStatus";
 
 type Props = {
   showLogin?: boolean;
@@ -22,7 +22,7 @@ export default function OnboardingFlow({
   showPermissions = true,
   showProgressBar = true,
 }: Props) {
-  const { completeOnboarding } = usePersistentStore();
+  const { completeOnboarding } = useOnboardingState();
   const [progress, setProgress] = useState<number>(1);
   const [phoneNumber, setPhoneNumber] = useState("");
 

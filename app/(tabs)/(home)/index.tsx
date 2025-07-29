@@ -12,12 +12,12 @@ import UserCard from "@/components/Home/UserCard";
 import { getIdToken } from "@react-native-firebase/auth";
 import useAuthContext from "@/hooks/useAuthContext";
 import { useEffect } from "react";
-import { usePersistentStore } from "@/hooks/usePersistentStore";
 import { metersToFeet } from "@/utils/location";
+import { useConnectionState } from "@/hooks/useConnections";
 
 export default function Index() {
   const { user } = useAuthContext();
-  const connections = usePersistentStore((state) => state.connections);
+  const connections = useConnectionState((state) => state.connections);
 
   useEffect(() => {
     getIdToken(user!).then((token) =>
