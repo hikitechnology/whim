@@ -1,13 +1,13 @@
 import Button from "@/components/Button";
 import AuthProvider from "@/context/AuthContext";
 import useAuthContext from "@/hooks/useAuthContext";
-import { usePersistentStore } from "@/hooks/usePersistentStore";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { QueryClient } from "@tanstack/react-query";
 import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persister";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { useOnboardingState } from "@/hooks/useOnboardingStatus";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,7 +31,7 @@ export default function RootLayout() {
 }
 
 function RootNavigator() {
-  const { hasCompletedOnboarding, resetOnboarding } = usePersistentStore();
+  const { hasCompletedOnboarding, resetOnboarding } = useOnboardingState();
   const { isInitializing, user, signOut } = useAuthContext();
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import PageBackground from "@/components/PageBackground";
 import CardHeader from "@/components/CardHeader";
 import useAuthenticatedUser from "@/hooks/useAuthenticatedUser";
 import { Href, useRouter } from "expo-router";
-import { usePersistentStore } from "@/hooks/usePersistentStore";
+import { useConnectionState } from "@/hooks/useConnections";
 
 type Props = {
   profile: UserProfileType;
@@ -20,7 +20,7 @@ export default function Profile({ profile, editPagePath }: Props) {
   const router = useRouter();
   const user = useAuthenticatedUser();
   const isOwnProfile = profile.uid === user.uid;
-  const metAt = usePersistentStore(
+  const metAt = useConnectionState(
     (state) =>
       state.connections.find((conn) => conn.uid === profile.uid)?.locationName,
   );

@@ -11,9 +11,10 @@ import * as Location from "expo-location";
 import { Button, StyleSheet, Text, View } from "react-native";
 import * as TaskManager from "expo-task-manager";
 import { useState } from "react";
-import { usePersistentStore } from "@/hooks/usePersistentStore";
 import { syncLocation } from "@/utils/api";
 import { LocalLocationUpdate } from "@/types/Location";
+import { useReverseGeocoder } from "@/hooks/useReverseGeocoder";
+import { useConnectionState } from "@/hooks/useConnections";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -39,14 +40,14 @@ TaskManager.defineTask<LocationTaskData>(
       for (const result of syncResults) {
         nearbyUsers.push({
           ...result,
-          locationName: await usePersistentStore.getState().getLocationName({
+          locationName: await useReverseGeocoder.getState().getLocationName({
             latitude: result.coordinates.y,
             longitude: result.coordinates.x,
           }),
         });
       }
 
-      usePersistentStore.getState().updateConnections(nearbyUsers);
+      useConnectionState.getState().updateConnections(nearbyUsers);
     }
   },
 );
@@ -54,12 +55,10 @@ TaskManager.defineTask<LocationTaskData>(
 export default function LocationPage() {
   const [status, setStatus] = useState<string>("Location tracking disabled");
 
-  const {
-    connections,
-    resetConnections,
-    endAllConnectionsNow,
-    resetLocationCache,
-  } = usePersistentStore();
+  const { connections, resetConnections, endAllConnectionsNow } =
+    useConnectionState();
+
+  const { resetLocationCache } = useReverseGeocoder();
 
   async function requestPermission() {
     const { status } = await Location.requestBackgroundPermissionsAsync();
@@ -80,6 +79,7 @@ export default function LocationPage() {
   async function disableTracking() {
     await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
     endAllConnectionsNow();
+    setStatus("Location tracking disabled");
   }
 
   return (
