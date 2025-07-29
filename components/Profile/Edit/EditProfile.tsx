@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+  ActionSheetIOS,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Card from "../../Card";
 import CardHeader from "../../CardHeader";
 import PageBackground from "../../PageBackground";
@@ -16,10 +23,12 @@ import Traits from "./Sections/Traits";
 import Favorites from "./Sections/Favorites";
 import LookingFor from "./Sections/LookingFor";
 import ConversationStarters from "./Sections/ConversationStarters";
-import { updateUserProfile } from "@/utils/api";
+import { updateUserProfile, uploadImages } from "@/utils/api";
 import { useRouter } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react";
+import * as ImagePicker from "expo-image-picker";
+import ApiImage from "@/components/ApiImage";
 
 const sectionMapping: { label: string; key: keyof UserProfile }[] = [
   { label: "Interests", key: "showInterests" },
@@ -52,6 +61,8 @@ function EditProfile({ profile }: Props) {
     },
   });
 
+  const [imageChangeInProgress, setImageChangeInProgress] = useState(false);
+
   const profileForForm = normalProfileToFormProfile(profile);
 
   const { control, watch, handleSubmit } = useForm<FormUserProfile>({
@@ -73,13 +84,64 @@ function EditProfile({ profile }: Props) {
     },
   });
 
+  function pickImage(onChange: (imageId: string) => void) {
+    return async () => {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ["Cancel", "Photo Library", "Take Photo"],
+          cancelButtonIndex: 0,
+        },
+        async (buttonIndex) => {
+          if (buttonIndex === 0) return;
+
+          const imageSelector =
+            buttonIndex === 1
+              ? ImagePicker.launchImageLibraryAsync
+              : ImagePicker.launchCameraAsync;
+
+          const result = await imageSelector({
+            allowsEditing: true,
+            aspect: [1, 1],
+          });
+
+          setImageChangeInProgress(true);
+
+          if (result.canceled) {
+            setImageChangeInProgress(false);
+            return;
+          }
+
+          const [imageId] = await uploadImages(result);
+          console.log("upload successful, image id:", imageId);
+          setImageChangeInProgress(false);
+          onChange(imageId);
+        },
+      );
+    };
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <PageBackground contentContainerStyle={{ paddingBottom: 80 }}>
         <Card>
           <CardHeader icon="person-outline">Basic Info</CardHeader>
           <View style={styles.pfpContainer}>
-            <View style={styles.pfp} />
+            <Controller
+              name="pfpId"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TouchableOpacity
+                  style={styles.pfpButton}
+                  onPress={pickImage(onChange)}
+                >
+                  {!imageChangeInProgress ? (
+                    <ApiImage id={value} targetSize={90} style={styles.pfp} />
+                  ) : (
+                    <ActivityIndicator />
+                  )}
+                </TouchableOpacity>
+              )}
+            />
             <Text style={styles.pfpText}>Tap to change your photo</Text>
           </View>
           <Controller
@@ -160,11 +222,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
   },
-  pfp: {
+  pfpButton: {
     width: 90,
     height: 90,
     backgroundColor: "#eaeaea",
     borderRadius: 999,
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  pfp: {
+    width: 90,
+    height: 90,
   },
   pfpText: {
     color: "#4b5563",

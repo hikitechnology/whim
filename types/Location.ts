@@ -6,6 +6,7 @@ export type ApiLocationUpdate = {
     y: number;
   };
   name: string;
+  pfpId?: string;
   interests?: string[];
 };
 

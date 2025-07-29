@@ -10,6 +10,7 @@ import CardHeader from "@/components/CardHeader";
 import useAuthenticatedUser from "@/hooks/useAuthenticatedUser";
 import { Href, useRouter } from "expo-router";
 import { useConnectionState } from "@/hooks/useConnections";
+import ApiImage from "../ApiImage";
 
 type Props = {
   profile: UserProfileType;
@@ -29,7 +30,9 @@ export default function Profile({ profile, editPagePath }: Props) {
     <PageBackground>
       <Card>
         <View style={styles.userOverview}>
-          <View style={styles.pfp} />
+          <View style={styles.pfpContainer}>
+            <ApiImage id={profile.pfpId} targetSize={90} style={styles.pfp} />
+          </View>
           <Text style={styles.name}>{profile.name}</Text>
           {metAt ? (
             <IconText
@@ -197,11 +200,16 @@ const styles = StyleSheet.create({
     height: 44,
     gap: 10,
   },
-  pfp: {
+  pfpContainer: {
     width: 90,
     height: 90,
     backgroundColor: "#eaeaea",
     borderRadius: 999,
+    overflow: "hidden",
+  },
+  pfp: {
+    width: 90,
+    height: 90,
   },
   name: {
     fontSize: 26,

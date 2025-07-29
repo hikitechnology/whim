@@ -39,6 +39,7 @@ export default function Index() {
         renderItem={({ item }) => (
           <UserCard
             name={item.name}
+            pfpId={item.pfpId}
             location={`Near ${item.locationName}`}
             // mutualFriendsCount={item.mutualFriends}
             time={new Date(item.startTime).toLocaleTimeString([], {
