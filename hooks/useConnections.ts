@@ -12,6 +12,7 @@ type ConnectionState = {
     distance: number;
     locationName: string;
     name: string;
+    pfpId?: string;
     interests?: string[];
   }[];
   updateConnections: (locationUpdates: LocalLocationUpdate[]) => void;
@@ -41,6 +42,7 @@ export const useConnectionState = create(
             locationName: update.locationName,
             distance: update.distance,
             name: update.name,
+            pfpId: update.pfpId,
             interests: update.interests,
           };
 

@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 
 type Props = {
   name?: string;
+  pfpId?: string;
   location?: string;
   time?: string;
   distance?: string;
@@ -25,7 +26,7 @@ function UserCard(props: Props) {
         {props.name ? (
           <UserCardBase.Name>{props.name}</UserCardBase.Name>
         ) : null}
-        <UserCardBase.ProfilePic />
+        <UserCardBase.ProfilePic id={props.pfpId} />
         {props.mutualFriendsCount && props.mutualFriendsCount > 0 ? (
           <UserCardBase.Badge>
             {props.mutualFriendsCount} mutual friend

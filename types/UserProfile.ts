@@ -13,6 +13,7 @@ type Favorites = Favorite[];
 export type UserProfile = {
   uid: string;
   name: string;
+  pfpId?: string;
   bio?: string;
   interests?: string[];
   traits?: Traits;

@@ -1,11 +1,16 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet } from "react-native";
+import ApiImage from "../ApiImage";
 
-export default function ProfilePic() {
-  return <View style={styles.container} />;
+type Props = {
+  id?: string;
+};
+
+export default function ProfilePic({ id }: Props) {
+  return <ApiImage id={id} targetSize={64} style={styles.pic} />;
 }
 
 const styles = StyleSheet.create({
-  container: {
+  pic: {
     backgroundColor: "#eaeaea",
     width: 64,
     height: 64,
