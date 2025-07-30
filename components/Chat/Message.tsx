@@ -1,6 +1,10 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View } from "react-native";
-import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeInLeft,
+  FadeInRight,
+} from "react-native-reanimated";
 
 type Props = {
   isOutgoing?: boolean;
@@ -17,12 +21,15 @@ export default function Message({ isOutgoing = false, children }: Props) {
     },
   });
 
-  const entryAnimation = (isOutgoing ? FadeInRight : FadeInLeft).duration(200);
+  const messageAnimation = (isOutgoing ? FadeInRight : FadeInLeft).duration(
+    200,
+  );
+  const timestampAnimation = FadeIn.duration(200);
 
   return (
     <View style={[styles.container, senderStyles.container]}>
       <Animated.View
-        entering={entryAnimation}
+        entering={messageAnimation}
         style={[styles.bubble, senderStyles.bubble]}
       >
         {isOutgoing ? (
@@ -35,7 +42,9 @@ export default function Message({ isOutgoing = false, children }: Props) {
         ) : null}
         <Text style={styles.text}>{children}</Text>
       </Animated.View>
-      <Text style={styles.timestamp}>2:34 PM</Text>
+      <Animated.Text entering={timestampAnimation} style={styles.timestamp}>
+        2:34 PM
+      </Animated.Text>
     </View>
   );
 }

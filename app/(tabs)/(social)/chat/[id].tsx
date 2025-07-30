@@ -11,7 +11,6 @@ import { useRef, useState } from "react";
 import Button from "@/components/Button";
 
 // TODO: animate bottom sheet border radius when < 100%
-// TODO: this is jank as fuck. switch to this library maybe, looks more promising https://github.com/ammarahm-ed/react-native-actions-sheet
 
 export default function Chat() {
   const listRef = useRef<BottomSheetFlatListMethods | null>(null);
@@ -31,6 +30,17 @@ export default function Chat() {
 
   return (
     <View style={{ flex: 1 }}>
+      <View
+        style={{
+          // fixes swipe back navigation gesture
+          position: "absolute",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: 20,
+          zIndex: 999,
+        }}
+      />
       <Header />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
