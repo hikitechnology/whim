@@ -1,4 +1,5 @@
-import { ScrollView, ScrollViewProps, StyleSheet } from "react-native";
+import { ScrollViewProps, StyleSheet } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 export default function PageBackground({
   style,
@@ -7,13 +8,14 @@ export default function PageBackground({
   ...rest
 }: ScrollViewProps) {
   return (
-    <ScrollView
+    <KeyboardAwareScrollView
+      disableScrollOnKeyboardHide
       style={[styles.container, style]}
       contentContainerStyle={[styles.content, contentContainerStyle]}
       {...rest}
     >
       {children}
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 }
 
