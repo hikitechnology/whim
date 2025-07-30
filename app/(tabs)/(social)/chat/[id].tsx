@@ -1,50 +1,63 @@
 import Header from "@/components/Chat/Header";
 import Message from "@/components/Chat/Message";
 import { StyleSheet, View } from "react-native";
-import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import BottomSheet, {
+  BottomSheetFlatList,
+  BottomSheetFlatListMethods,
+} from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MapView from "react-native-maps";
-import TextInput from "@/components/TextInput";
+import { useRef, useState } from "react";
+import Button from "@/components/Button";
 
 // TODO: animate bottom sheet border radius when < 100%
 // TODO: this is jank as fuck. switch to this library maybe, looks more promising https://github.com/ammarahm-ed/react-native-actions-sheet
 
 export default function Chat() {
+  const listRef = useRef<BottomSheetFlatListMethods | null>(null);
+  const [messages, setMessages] = useState<
+    { isOutgoing: boolean; content: string }[]
+  >([]);
+
+  function addMessage() {
+    setMessages((prev) => [
+      ...prev,
+      {
+        isOutgoing: Math.random() < 0.5,
+        content: `My favorite number is ${Math.random()}`,
+      },
+    ]);
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <Header />
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <MapView style={{ flex: 1 }} />
-        <BottomSheet
-          snapPoints={["15%", "40%", "100%"]}
-          enableDynamicSizing={false}
-          index={2}
-          animateOnMount={false}
-          backgroundStyle={{ backgroundColor: "#f5f5f5", borderRadius: 0 }}
-          handleIndicatorStyle={{ backgroundColor: "#9ca3af" }}
-        >
-          <BottomSheetScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={styles.messages}
+        <View style={{ flex: 1 }}>
+          <MapView style={{ flex: 1 }} />
+          <BottomSheet
+            snapPoints={["15%", "100%"]}
+            enableDynamicSizing={false}
+            index={1}
+            animateOnMount={false}
+            backgroundStyle={{ backgroundColor: "#f5f5f5", borderRadius: 0 }}
+            handleIndicatorStyle={{ backgroundColor: "#9ca3af" }}
           >
-            <Message isOutgoing />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-            <Message />
-          </BottomSheetScrollView>
-          <TextInput provider="bottomSheet" />
-        </BottomSheet>
+            <BottomSheetFlatList
+              data={messages}
+              renderItem={({ item }) => (
+                <Message isOutgoing={item.isOutgoing}>{item.content}</Message>
+              )}
+              ref={listRef}
+              onContentSizeChange={() =>
+                listRef.current?.scrollToEnd({ animated: true })
+              }
+              contentContainerStyle={styles.messages}
+              ListFooterComponent={<View style={{ height: 6 }} />}
+            />
+            <Button onPress={addMessage}>add message</Button>
+          </BottomSheet>
+        </View>
       </GestureHandlerRootView>
     </View>
   );
@@ -58,8 +71,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   messages: {
-    padding: 16,
+    paddingHorizontal: 16,
     paddingTop: 6,
-    gap: 10,
   },
 });

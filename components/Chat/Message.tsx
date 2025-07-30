@@ -1,11 +1,13 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View } from "react-native";
+import Animated, { FadeInLeft, FadeInRight } from "react-native-reanimated";
 
 type Props = {
   isOutgoing?: boolean;
+  children: string;
 };
 
-export default function Message({ isOutgoing = false }: Props) {
+export default function Message({ isOutgoing = false, children }: Props) {
   const senderStyles = StyleSheet.create({
     container: {
       alignItems: isOutgoing ? "flex-end" : "flex-start",
@@ -15,9 +17,14 @@ export default function Message({ isOutgoing = false }: Props) {
     },
   });
 
+  const entryAnimation = (isOutgoing ? FadeInRight : FadeInLeft).duration(200);
+
   return (
     <View style={[styles.container, senderStyles.container]}>
-      <View style={[styles.bubble, senderStyles.bubble]}>
+      <Animated.View
+        entering={entryAnimation}
+        style={[styles.bubble, senderStyles.bubble]}
+      >
         {isOutgoing ? (
           <LinearGradient
             colors={["#fcd34d", "#fdba74"]}
@@ -26,10 +33,8 @@ export default function Message({ isOutgoing = false }: Props) {
             style={styles.background}
           />
         ) : null}
-        <Text style={styles.text}>
-          That coffee shop you recommended was amazing! ☕
-        </Text>
-      </View>
+        <Text style={styles.text}>{children}</Text>
+      </Animated.View>
       <Text style={styles.timestamp}>2:34 PM</Text>
     </View>
   );
@@ -38,6 +43,7 @@ export default function Message({ isOutgoing = false }: Props) {
 const styles = StyleSheet.create({
   container: {
     gap: 4,
+    paddingBottom: 10,
   },
   bubble: {
     width: "90%",
