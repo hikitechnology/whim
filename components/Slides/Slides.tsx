@@ -1,6 +1,6 @@
 import Card from "@/components/Card";
 import React, { ReactElement, useState } from "react";
-import { KeyboardAvoidingView } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 type Props = {
   slides: (setSlide: (id: string | number) => void) => {
@@ -25,7 +25,12 @@ export default function Slides({
   const currentSlideComponent = slides(setSlide)[currentSlide];
 
   return (
-    <KeyboardAvoidingView behavior="padding">
+    <KeyboardAvoidingView
+      behavior="position"
+      keyboardVerticalOffset={
+        50 /* TODO: calculate this based on distance from top */
+      }
+    >
       <Card innerStyle={{ padding: 34, overflow: "visible" }}>
         {/* key is added to trigger rerender. animation wont work without*/}
         {React.cloneElement(currentSlideComponent, { key: currentSlide })}
