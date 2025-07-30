@@ -85,7 +85,7 @@ export default function OnboardingFlow({
         <View style={styles.slides}>
           <Slides
             slides={onboardingSlides}
-            initialSlide={showLogin ? "phone" : "fgLocation"}
+            initialSlide={showLogin ? "phone" : "profile"}
             onSlideChange={setProgressWithSlide}
           />
         </View>
