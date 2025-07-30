@@ -8,6 +8,7 @@ import { createAsyncStoragePersister } from "@tanstack/query-async-storage-persi
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { useOnboardingState } from "@/hooks/useOnboardingStatus";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,7 +25,9 @@ export default function RootLayout() {
       persistOptions={{ persister: asyncStoragePersister }}
     >
       <AuthProvider>
-        <RootNavigator />
+        <KeyboardProvider>
+          <RootNavigator />
+        </KeyboardProvider>
       </AuthProvider>
     </PersistQueryClientProvider>
   );
