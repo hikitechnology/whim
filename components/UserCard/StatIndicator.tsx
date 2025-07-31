@@ -1,56 +1,15 @@
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from "react-native-reanimated";
+import StatusIndicator from "../StatusIndicator";
 
 type Props = {
   children: ReactNode;
 };
 
 export default function StatIndicator({ children }: Props) {
-  const scale = useSharedValue(1);
-  const opacity = useSharedValue(1);
-
-  useEffect(() => {
-    scale.value = withRepeat(
-      withTiming(1.75, {
-        duration: 1000,
-        easing: Easing.inOut(Easing.ease),
-      }),
-      -1,
-    );
-
-    opacity.value = withRepeat(
-      withTiming(0, {
-        duration: 1000,
-        easing: Easing.inOut(Easing.ease),
-      }),
-      -1,
-    );
-  }, [scale, opacity]);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-    opacity: opacity.value,
-  }));
-
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          backgroundColor: "#00FF00",
-          width: 10,
-          height: 10,
-          borderRadius: 6,
-        }}
-      >
-        <Animated.View style={[styles.dot, animatedStyle]} />
-      </View>
+      <StatusIndicator status="online" size={10} />
       <Text style={styles.text}>{children}</Text>
     </View>
   );
@@ -64,11 +23,5 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 6,
-    backgroundColor: "#00FF0066",
   },
 });

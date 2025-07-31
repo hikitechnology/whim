@@ -1,9 +1,8 @@
 import Profile from "@/components/Profile/Profile";
-import profileQueryOptions from "@/queries/profileQueryOptions";
-import { useQuery } from "@tanstack/react-query";
 import { Text } from "react-native";
 import { UserProfile as UserProfileType } from "@/types/UserProfile";
 import { Href } from "expo-router";
+import useProfileQuery from "@/hooks/queries/useProfileQuery";
 
 type Props = {
   userId: string;
@@ -11,7 +10,7 @@ type Props = {
 };
 
 export default function ProfilePage({ userId, editPagePath }: Props) {
-  const { data, isPending, isError } = useQuery(profileQueryOptions(userId));
+  const { data, isPending, isError } = useProfileQuery(userId);
 
   if (isPending) return <Text>loading profile</Text>;
   if (isError) return <Text>error while loading profile</Text>;

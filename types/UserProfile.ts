@@ -36,7 +36,6 @@ export type FormUserProfile = Omit<
 };
 
 export type BasicUserProfile = {
-  uid: string;
   name: string;
-  interests?: string[];
+  pfpId?: string;
 };

@@ -72,6 +72,7 @@ function UserCard(props: Props) {
             variant="secondary"
             icon="chatbubble-outline"
             style={{ flex: 1 }}
+            onPress={() => router.navigate(`/chat/${props.userId}`)}
           >
             Chat
           </Button>

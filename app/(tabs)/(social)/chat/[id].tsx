@@ -1,6 +1,6 @@
 import Header from "@/components/Chat/Header";
 import Message from "@/components/Chat/Message";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
@@ -9,10 +9,16 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MapView from "react-native-maps";
 import { useRef, useState } from "react";
 import Button from "@/components/Button";
+import { useLocalSearchParams } from "expo-router";
+import useBasicProfileQuery from "@/hooks/queries/useBasicProfileQuery";
+import { useConnectionState } from "@/hooks/useConnections";
 
 // TODO: animate bottom sheet border radius when < 100%
 
 export default function Chat() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data, isPending, isError } = useBasicProfileQuery(id);
+
   const listRef = useRef<BottomSheetFlatListMethods | null>(null);
   const [messages, setMessages] = useState<
     { isOutgoing: boolean; content: string }[]
@@ -28,6 +34,9 @@ export default function Chat() {
     ]);
   }
 
+  if (isPending) return <Text>Loading profile</Text>;
+  if (isError) return <Text>Error while loading profile</Text>;
+
   return (
     <View style={{ flex: 1 }}>
       <View
@@ -38,10 +47,10 @@ export default function Chat() {
           top: 0,
           bottom: 0,
           width: 20,
-          zIndex: 999,
+          zIndex: 9,
         }}
       />
-      <Header />
+      <Header userId={id} name={data.name} pfpId={data.pfpId} />
       <GestureHandlerRootView style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
           <MapView style={{ flex: 1 }} />
