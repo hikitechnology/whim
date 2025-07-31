@@ -1,6 +1,12 @@
 import Header, { CHAT_HEADER_HEIGHT } from "@/components/Chat/Header";
 import Message from "@/components/Chat/Message";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Keyboard,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
@@ -14,6 +20,8 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import TextInput from "@/components/TextInput";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
+import useMessaging from "@/hooks/useMessaging";
+import { MESSAGE_SPLIT_TIME_MS } from "@/constants";
 
 // TODO: animate bottom sheet border radius when < 100%
 
@@ -22,24 +30,28 @@ const CHAT_HANDLE_HEIGHT = 24;
 export default function Chat() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isPending, isError } = useBasicProfileQuery(id);
+  const { messages, sendMessage } = useMessaging();
 
+  const [message, setMessage] = useState<string>("");
   const listRef = useRef<BottomSheetFlatListMethods | null>(null);
-  const [messages, setMessages] = useState<
-    { isOutgoing: boolean; content: string }[]
-  >([]);
+
+  function send() {
+    // if timeout isn't used, and the last word gets autocorrected, it'll replace the empty string upon sending.
+    // this solution clears the message box properly, but discards the autocorrect change. not ideal but i've spent
+    // like 40 minutes trying to fix it with no luck so im giving up for now
+    setTimeout(() => {
+      if (message.trim().length > 0) {
+        setMessage("");
+        sendMessage({
+          message,
+          receiver: id,
+        });
+      }
+    });
+  }
 
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const [isScrolling, setIsScrolling] = useState(false);
-
-  function addMessage() {
-    setMessages((prev) => [
-      ...prev,
-      {
-        isOutgoing: Math.random() < 0.5,
-        content: `My favorite number is ${Math.random()}`,
-      },
-    ]);
-  }
 
   if (isPending) return <Text>Loading profile</Text>;
   if (isError) return <Text>Error while loading profile</Text>;
@@ -69,12 +81,35 @@ export default function Chat() {
             backgroundStyle={{ backgroundColor: "#f5f5f5", borderRadius: 0 }}
             handleStyle={{ height: CHAT_HANDLE_HEIGHT }}
             handleIndicatorStyle={{ backgroundColor: "#9ca3af" }}
+            onChange={(point) => {
+              if (point === 0) {
+                Keyboard.dismiss();
+              }
+            }}
           >
             <BottomSheetFlatList
               data={messages}
-              renderItem={({ item }) => (
-                <Message isOutgoing={item.isOutgoing}>{item.content}</Message>
-              )}
+              renderItem={({ item, index }) => {
+                const nextMessage = messages[index + 1];
+
+                const currentTimestamp = new Date(item.timestamp).getTime();
+                const nextTimestamp = nextMessage
+                  ? new Date(nextMessage.timestamp).getTime()
+                  : Infinity;
+
+                const showTimestamp =
+                  nextTimestamp - currentTimestamp > MESSAGE_SPLIT_TIME_MS ||
+                  !nextMessage ||
+                  nextMessage.sender !== item.sender;
+
+                return (
+                  <Message
+                    isOutgoing={item.sender !== id}
+                    timestamp={showTimestamp ? item.timestamp : undefined}
+                    text={item.message}
+                  />
+                );
+              }}
               ref={listRef}
               onContentSizeChange={() =>
                 listRef.current?.scrollToEnd({ animated: true })
@@ -111,9 +146,11 @@ export default function Chat() {
                     submitBehavior="newline"
                     multiline
                     style={{ height: "auto", maxHeight: 150 }}
+                    value={message}
+                    onChangeText={setMessage}
                   />
                 </View>
-                <TouchableOpacity onPress={addMessage}>
+                <TouchableOpacity onPress={send} disabled={false}>
                   <LinearGradient
                     colors={["#fbbf2477", "#f9731677"]}
                     start={{ x: 0, y: 0.75 }}

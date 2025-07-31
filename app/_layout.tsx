@@ -14,7 +14,13 @@ const ENABLE_DEBUG_OVERLAY = false;
 
 SplashScreen.preventAutoHideAsync();
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      gcTime: 604800000, // 7 days
+    },
+  },
+});
 
 const asyncStoragePersister = createAsyncStoragePersister({
   storage: AsyncStorage,

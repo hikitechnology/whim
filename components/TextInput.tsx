@@ -1,5 +1,4 @@
-import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
-import { useState } from "react";
+import { Ref, useState } from "react";
 import {
   TextInput as RNTextInput,
   StyleSheet,
@@ -9,10 +8,10 @@ import {
 import FormLabel from "./FormLabel";
 
 type Props = {
-  provider?: "default" | "bottomSheet";
   borderColor?: string;
   borderColorFocused?: string;
   label?: string;
+  ref?: Ref<RNTextInput>;
 } & TextInputProps;
 
 export default function TextInput({
@@ -20,7 +19,6 @@ export default function TextInput({
   enterKeyHint,
   borderColor = "rgb(252, 211, 77)",
   borderColorFocused,
-  provider = "default",
   label,
   ...rest
 }: Props) {
@@ -31,13 +29,10 @@ export default function TextInput({
       focused && borderColorFocused ? borderColorFocused : borderColor,
   };
 
-  const InputProvider =
-    provider === "default" ? RNTextInput : BottomSheetTextInput;
-
   return (
     <View style={styles.container}>
       {label ? <FormLabel>{label}</FormLabel> : null}
-      <InputProvider
+      <RNTextInput
         style={[styles.input, focusStyle, style]}
         placeholderTextColor="#6b7280"
         onFocus={() => setFocused(true)}

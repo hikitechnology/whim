@@ -8,10 +8,15 @@ import Animated, {
 
 type Props = {
   isOutgoing?: boolean;
-  children: string;
+  timestamp?: number | string;
+  text: string;
 };
 
-export default function Message({ isOutgoing = false, children }: Props) {
+export default function Message({
+  isOutgoing = false,
+  timestamp,
+  text,
+}: Props) {
   const senderStyles = StyleSheet.create({
     container: {
       alignItems: isOutgoing ? "flex-end" : "flex-start",
@@ -40,11 +45,13 @@ export default function Message({ isOutgoing = false, children }: Props) {
             style={styles.background}
           />
         ) : null}
-        <Text style={styles.text}>{children}</Text>
+        <Text style={styles.text}>{text}</Text>
       </Animated.View>
-      <Animated.Text entering={timestampAnimation} style={styles.timestamp}>
-        2:34 PM
-      </Animated.Text>
+      {timestamp !== undefined ? (
+        <Animated.Text entering={timestampAnimation} style={styles.timestamp}>
+          {new Date(timestamp).toLocaleTimeString([], { timeStyle: "short" })}
+        </Animated.Text>
+      ) : null}
     </View>
   );
 }
@@ -52,10 +59,10 @@ export default function Message({ isOutgoing = false, children }: Props) {
 const styles = StyleSheet.create({
   container: {
     gap: 4,
-    paddingBottom: 10,
+    paddingBottom: 4,
   },
   bubble: {
-    width: "90%",
+    maxWidth: "90%",
     backgroundColor: "#fff",
     paddingVertical: 12,
     paddingHorizontal: 20,
@@ -76,5 +83,6 @@ const styles = StyleSheet.create({
   timestamp: {
     color: "#6b7280",
     fontSize: 14,
+    paddingBottom: 4,
   },
 });
