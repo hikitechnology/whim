@@ -12,6 +12,8 @@ type Props = {
   pfpId?: string;
 };
 
+export const CHAT_HEADER_HEIGHT = 100;
+
 export default function Header({ userId, name, pfpId }: Props) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 20,
+    height: CHAT_HEADER_HEIGHT,
   },
   infoContainer: {
     flexDirection: "row",
