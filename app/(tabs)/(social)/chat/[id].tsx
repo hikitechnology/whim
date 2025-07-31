@@ -1,6 +1,6 @@
-import Header from "@/components/Chat/Header";
+import Header, { CHAT_HEADER_HEIGHT } from "@/components/Chat/Header";
 import Message from "@/components/Chat/Message";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
@@ -8,12 +8,16 @@ import BottomSheet, {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MapView from "react-native-maps";
 import { useRef, useState } from "react";
-import Button from "@/components/Button";
 import { useLocalSearchParams } from "expo-router";
 import useBasicProfileQuery from "@/hooks/queries/useBasicProfileQuery";
-import { useConnectionState } from "@/hooks/useConnections";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
+import TextInput from "@/components/TextInput";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { LinearGradient } from "expo-linear-gradient";
 
 // TODO: animate bottom sheet border radius when < 100%
+
+const CHAT_HANDLE_HEIGHT = 24;
 
 export default function Chat() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,6 +27,9 @@ export default function Chat() {
   const [messages, setMessages] = useState<
     { isOutgoing: boolean; content: string }[]
   >([]);
+
+  const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
+  const [isScrolling, setIsScrolling] = useState(false);
 
   function addMessage() {
     setMessages((prev) => [
@@ -60,6 +67,7 @@ export default function Chat() {
             index={1}
             animateOnMount={false}
             backgroundStyle={{ backgroundColor: "#f5f5f5", borderRadius: 0 }}
+            handleStyle={{ height: CHAT_HANDLE_HEIGHT }}
             handleIndicatorStyle={{ backgroundColor: "#9ca3af" }}
           >
             <BottomSheetFlatList
@@ -71,10 +79,56 @@ export default function Chat() {
               onContentSizeChange={() =>
                 listRef.current?.scrollToEnd({ animated: true })
               }
+              onLayout={() => {
+                if (isScrolledToBottom && !isScrolling) {
+                  listRef.current?.scrollToEnd({ animated: false });
+                }
+              }}
               contentContainerStyle={styles.messages}
               ListFooterComponent={<View style={{ height: 6 }} />}
+              onMomentumScrollBegin={() => setIsScrolling(true)}
+              onMomentumScrollEnd={() => setIsScrolling(false)}
+              // @ts-ignore-error incorrect type definition https://github.com/gorhom/react-native-bottom-sheet/pull/1019
+              onScroll={({ nativeEvent }) => {
+                const viewportHeight = nativeEvent.layoutMeasurement.height;
+                const contentOffset = nativeEvent.contentOffset.y;
+                const contentHeight = nativeEvent.contentSize.height;
+
+                setIsScrolledToBottom(
+                  viewportHeight + contentOffset + 50 >= contentHeight,
+                );
+              }}
             />
-            <Button onPress={addMessage}>add message</Button>
+            <KeyboardAvoidingView
+              behavior="padding"
+              keyboardVerticalOffset={CHAT_HEADER_HEIGHT + CHAT_HANDLE_HEIGHT}
+            >
+              <View style={styles.messageBar}>
+                <View style={{ flex: 1 }}>
+                  <TextInput
+                    placeholder="Type a message..."
+                    enterKeyHint="enter"
+                    submitBehavior="newline"
+                    multiline
+                    style={{ height: "auto", maxHeight: 150 }}
+                  />
+                </View>
+                <TouchableOpacity onPress={addMessage}>
+                  <LinearGradient
+                    colors={["#fbbf2477", "#f9731677"]}
+                    start={{ x: 0, y: 0.75 }}
+                    end={{ x: 1, y: 0.25 }}
+                    style={styles.sendButton}
+                  >
+                    <Ionicons
+                      name="paper-plane-outline"
+                      size={26}
+                      color="#fff"
+                    />
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            </KeyboardAvoidingView>
           </BottomSheet>
         </View>
       </GestureHandlerRootView>
@@ -92,5 +146,22 @@ const styles = StyleSheet.create({
   messages: {
     paddingHorizontal: 16,
     paddingTop: 6,
+  },
+  messageBar: {
+    flexDirection: "row",
+    padding: 6,
+    gap: 6,
+    borderTopWidth: 1,
+    borderTopColor: "#e5e7eb",
+    alignItems: "center",
+  },
+  sendButton: {
+    backgroundColor: "#fbbf24",
+    width: 36,
+    height: 36,
+    paddingTop: 6,
+    paddingLeft: 4,
+    marginRight: 2,
+    borderRadius: 999,
   },
 });

@@ -10,6 +10,8 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import { useOnboardingState } from "@/hooks/useOnboardingStatus";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
+const ENABLE_DEBUG_OVERLAY = false;
+
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
@@ -50,7 +52,7 @@ function RootNavigator() {
 
   return (
     <>
-      {hasCompletedOnboarding && (
+      {ENABLE_DEBUG_OVERLAY && hasCompletedOnboarding && (
         <Button
           style={{
             position: "absolute",
@@ -64,7 +66,7 @@ function RootNavigator() {
           reset onboarding
         </Button>
       )}
-      {user && (
+      {ENABLE_DEBUG_OVERLAY && user && (
         <Button
           style={{
             position: "absolute",
