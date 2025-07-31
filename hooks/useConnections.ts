@@ -4,17 +4,20 @@ import equal from "fast-deep-equal";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+type Connection = {
+  uid: string;
+  startTime: number;
+  endTime?: number;
+  distance: number;
+  locationName: string;
+  name: string;
+  pfpId?: string;
+  interests?: string[];
+};
+
 type ConnectionState = {
-  connections: {
-    uid: string;
-    startTime: number;
-    endTime?: number;
-    distance: number;
-    locationName: string;
-    name: string;
-    pfpId?: string;
-    interests?: string[];
-  }[];
+  connections: Connection[];
+  getConnection: (uid: string) => Connection | undefined;
   updateConnections: (locationUpdates: LocalLocationUpdate[]) => void;
   endAllConnectionsNow: () => void;
   resetConnections: () => void;
@@ -24,6 +27,8 @@ export const useConnectionState = create(
   persist<ConnectionState>(
     (set, get) => ({
       connections: [],
+      getConnection: (uid) =>
+        get().connections.find((conn) => conn.uid === uid),
       updateConnections: (locationUpdates) => {
         let connections = [...get().connections];
 

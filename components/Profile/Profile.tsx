@@ -54,7 +54,11 @@ export default function Profile({ profile, editPagePath }: Props) {
             >
               Wave
             </Button>
-            <Button icon="chatbubble-outline" style={{ flex: 1 }}>
+            <Button
+              icon="chatbubble-outline"
+              style={{ flex: 1 }}
+              onPress={() => router.navigate(`/chat/${profile.uid}`)}
+            >
               Chat
             </Button>
           </View>

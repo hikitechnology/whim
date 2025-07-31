@@ -2,24 +2,47 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ApiImage from "../ApiImage";
+import { useConnectionState } from "@/hooks/useConnections";
+import StatusIndicator from "../StatusIndicator";
 
-export default function Header() {
+type Props = {
+  userId: string;
+  name: string;
+  pfpId?: string;
+};
+
+export default function Header({ userId, name, pfpId }: Props) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const connection = useConnectionState((state) => state.getConnection(userId));
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <TouchableOpacity onPress={() => router.back()} hitSlop={20}>
+      <TouchableOpacity
+        style={{ zIndex: 10 }}
+        onPress={() => router.back()}
+        hitSlop={20}
+      >
         <Ionicons name="arrow-back-outline" size={24} color="#4b5563" />
       </TouchableOpacity>
       <View style={styles.infoContainer}>
-        <View style={styles.pfp} />
-        <View>
-          <Text style={styles.name}>name</Text>
-          <View style={styles.statusContainer}>
-            <View style={styles.statusIndicator} />
-            <Text style={styles.statusText}>Online • Park Slope</Text>
-          </View>
+        <ApiImage style={styles.pfp} id={pfpId} targetSize={40} />
+        <View style={{ flex: 1 }}>
+          <Text style={styles.name}>{name}</Text>
+          {connection ? (
+            <View style={styles.statusContainer}>
+              {!connection.endTime ? (
+                <>
+                  <StatusIndicator status="online" size={8} />
+                  <Text style={styles.statusText}>Nearby •</Text>
+                </>
+              ) : null}
+              <Text style={[styles.statusText, { flex: 1 }]} numberOfLines={1}>
+                Met near {connection.locationName}
+              </Text>
+            </View>
+          ) : null}
         </View>
       </View>
       <TouchableOpacity hitSlop={20}>
@@ -58,12 +81,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-  },
-  statusIndicator: {
-    width: 8,
-    height: 8,
-    backgroundColor: "#4ade80",
-    borderRadius: 999,
   },
   statusText: {
     fontSize: 15,
