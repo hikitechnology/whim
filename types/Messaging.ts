@@ -4,9 +4,9 @@ export type ClientMessage = {
 };
 
 export type ServerMessage = {
-  id: number;
+  // id: number;
   sender: string;
   receiver: string;
   message: string;
-  timestamp: number;
+  timestamp: string | number;
 };

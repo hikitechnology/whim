@@ -94,6 +94,10 @@ function EditProfile({ profile }: Props) {
         async (buttonIndex) => {
           if (buttonIndex === 0) return;
 
+          if (buttonIndex === 2) {
+            await ImagePicker.requestCameraPermissionsAsync();
+          }
+
           const imageSelector =
             buttonIndex === 1
               ? ImagePicker.launchImageLibraryAsync
