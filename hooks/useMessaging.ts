@@ -1,15 +1,27 @@
-import { ClientMessage, ServerMessage, TypingEvent } from "@/types/Messaging";
+import {
+  ClientMessage,
+  DeliveredEvent,
+  ServerMessage,
+  TypingEvent,
+} from "@/types/Messaging";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import useAuthenticatedUser from "./useAuthenticatedUser";
 import { getIdToken } from "@react-native-firebase/auth";
+import simpleId from "@/utils/simpleId";
 
 const socket = io(process.env.EXPO_PUBLIC_SOCKET_URL, {
   autoConnect: false,
 });
 
+type StateMessage = Omit<ServerMessage, "id" | "timestamp"> & {
+  timestamp?: string | number;
+  clientId?: string;
+  delivered: boolean;
+};
+
 export default function useMessaging() {
-  const [messages, setMessages] = useState<ServerMessage[]>([]);
+  const [messages, setMessages] = useState<StateMessage[]>([]);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const user = useAuthenticatedUser();
 
@@ -18,8 +30,13 @@ export default function useMessaging() {
       socket.auth = { token };
       socket.connect();
       socket.on("message", (message: ServerMessage) => {
-        setMessages((prev) => [...prev, message]);
-
+        setMessages((prev) => [
+          ...prev,
+          {
+            ...message,
+            delivered: true,
+          },
+        ]);
         setTypingUsers((prev) =>
           prev.includes(message.sender)
             ? prev.toSpliced(prev.indexOf(message.sender), 1)
@@ -34,6 +51,15 @@ export default function useMessaging() {
           prev.includes(uid) ? prev.toSpliced(prev.indexOf(uid), 1) : prev,
         ),
       );
+      socket.on("delivered", ({ clientId, timestamp, id }: DeliveredEvent) => {
+        setMessages((prev) =>
+          prev.map((item) =>
+            item.clientId === clientId
+              ? { ...item, delivered: true, timestamp, id }
+              : item,
+          ),
+        );
+      });
     });
 
     return () => {
@@ -46,10 +72,11 @@ export default function useMessaging() {
     const newMessage = {
       ...message,
       sender: user.uid,
-      timestamp: Date.now(),
+      clientId: simpleId(),
+      delivered: false,
     };
     setMessages((prev) => [...prev, newMessage]);
-    socket.emit("message", message);
+    socket.emit("message", newMessage);
   }
 
   function sendTypingStart(toUid: string) {

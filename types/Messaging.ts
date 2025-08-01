@@ -4,13 +4,20 @@ export type ClientMessage = {
 };
 
 export type ServerMessage = {
-  // id: number;
+  id: number;
   sender: string;
   receiver: string;
   message: string;
   timestamp: string | number;
+  clientId?: string;
 };
 
 export type TypingEvent = {
   uid: string;
+};
+
+export type DeliveredEvent = {
+  clientId: string;
+  id: string;
+  timestamp: string;
 };
