@@ -1,18 +1,24 @@
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, {
   FadeIn,
   FadeInLeft,
   FadeInRight,
+  useAnimatedStyle,
 } from "react-native-reanimated";
 
 type Props = {
+  isDelivered?: boolean;
+  indicator?: "check" | "double-check" | "none";
   isOutgoing?: boolean;
   timestamp?: number | string;
   text: string;
 };
 
 export default function Message({
+  isDelivered = true,
+  indicator = "none",
   isOutgoing = false,
   timestamp,
   text,
@@ -31,26 +37,48 @@ export default function Message({
   );
   const timestampAnimation = FadeIn.duration(200);
 
+  const deliveredOpacity = useAnimatedStyle(() => ({
+    opacity: isDelivered ? 1 : 0.5,
+  }));
+
   return (
     <View style={[styles.container, senderStyles.container]}>
-      <Animated.View
-        entering={messageAnimation}
-        style={[styles.bubble, senderStyles.bubble]}
-      >
-        {isOutgoing ? (
-          <LinearGradient
-            colors={["#fcd34d", "#fdba74"]}
-            start={{ x: 0, y: 0.75 }}
-            end={{ x: 1, y: 0.25 }}
-            style={styles.background}
-          />
-        ) : null}
-        <Text style={styles.text}>{text}</Text>
+      <Animated.View style={deliveredOpacity}>
+        <Animated.View
+          entering={messageAnimation}
+          style={[styles.bubble, senderStyles.bubble]}
+        >
+          {isOutgoing ? (
+            <LinearGradient
+              colors={["#fcd34d", "#fdba74"]}
+              start={{ x: 0, y: 0.75 }}
+              end={{ x: 1, y: 0.25 }}
+              style={styles.background}
+            />
+          ) : null}
+          <Text style={styles.text}>{text}</Text>
+        </Animated.View>
       </Animated.View>
-      {timestamp !== undefined ? (
-        <Animated.Text entering={timestampAnimation} style={styles.timestamp}>
-          {new Date(timestamp).toLocaleTimeString([], { timeStyle: "short" })}
-        </Animated.Text>
+      {isDelivered && timestamp !== undefined ? (
+        <Animated.View
+          entering={timestampAnimation}
+          style={styles.timestampRow}
+        >
+          <Text style={styles.timestamp}>
+            {new Date(timestamp).toLocaleTimeString([], { timeStyle: "short" })}
+          </Text>
+          {indicator !== "none" && (
+            <Ionicons
+              name={
+                indicator === "check"
+                  ? "checkmark-outline"
+                  : "checkmark-done-outline"
+              }
+              size={14}
+              color="#6b7280"
+            />
+          )}
+        </Animated.View>
       ) : null}
     </View>
   );
@@ -79,6 +107,9 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+  },
+  timestampRow: {
+    flexDirection: "row",
   },
   timestamp: {
     color: "#6b7280",

@@ -100,21 +100,30 @@ export default function ChatPage() {
               renderItem={({ item, index }) => {
                 const nextMessage = messages[index + 1];
 
-                const currentTimestamp = new Date(item.timestamp).getTime();
-                const nextTimestamp = nextMessage
-                  ? new Date(nextMessage.timestamp).getTime()
+                const currentTimestamp = item.timestamp
+                  ? new Date(item.timestamp).getTime()
                   : Infinity;
+                const nextTimestamp =
+                  nextMessage && nextMessage.timestamp
+                    ? new Date(nextMessage.timestamp).getTime()
+                    : Infinity;
 
                 const showTimestamp =
                   nextTimestamp - currentTimestamp > MESSAGE_SPLIT_TIME_MS ||
-                  !nextMessage ||
-                  nextMessage.sender !== item.sender;
+                  !nextMessage;
+
+                const indicator =
+                  item.sender !== id && nextMessage === undefined
+                    ? "check"
+                    : "none";
 
                 return (
                   <Message
                     isOutgoing={item.sender !== id}
                     timestamp={showTimestamp ? item.timestamp : undefined}
                     text={item.message}
+                    isDelivered={item.delivered}
+                    indicator={indicator}
                   />
                 );
               }}
@@ -133,7 +142,7 @@ export default function ChatPage() {
               }}
               contentContainerStyle={styles.messages}
               ListFooterComponent={
-                <View style={{ minHeight: 6 }}>
+                <View style={{ paddingBottom: 6 }}>
                   {typingUsers.includes(id) && <TypingIndicator />}
                 </View>
               }
