@@ -10,3 +10,7 @@ export type ServerMessage = {
   message: string;
   timestamp: string | number;
 };
+
+export type TypingEvent = {
+  uid: string;
+};

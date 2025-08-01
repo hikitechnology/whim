@@ -1,4 +1,4 @@
-import { ClientMessage, ServerMessage } from "@/types/Messaging";
+import { ClientMessage, ServerMessage, TypingEvent } from "@/types/Messaging";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import useAuthenticatedUser from "./useAuthenticatedUser";
@@ -10,14 +10,29 @@ const socket = io(process.env.EXPO_PUBLIC_SOCKET_URL, {
 
 export default function useMessaging() {
   const [messages, setMessages] = useState<ServerMessage[]>([]);
+  const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const user = useAuthenticatedUser();
 
   useEffect(() => {
     getIdToken(user, true).then((token) => {
       socket.auth = { token };
       socket.connect();
-      socket.on("message", (message: ServerMessage) =>
-        setMessages((prev) => [...prev, message]),
+      socket.on("message", (message: ServerMessage) => {
+        setMessages((prev) => [...prev, message]);
+
+        setTypingUsers((prev) =>
+          prev.includes(message.sender)
+            ? prev.toSpliced(prev.indexOf(message.sender), 1)
+            : prev,
+        );
+      });
+      socket.on("typing-start", ({ uid }: TypingEvent) =>
+        setTypingUsers((prev) => (!prev.includes(uid) ? [...prev, uid] : prev)),
+      );
+      socket.on("typing-stop", ({ uid }: TypingEvent) =>
+        setTypingUsers((prev) =>
+          prev.includes(uid) ? prev.toSpliced(prev.indexOf(uid), 1) : prev,
+        ),
       );
     });
 
@@ -37,5 +52,19 @@ export default function useMessaging() {
     socket.emit("message", message);
   }
 
-  return { messages, sendMessage };
+  function sendTypingStart(toUid: string) {
+    socket.emit("typing-start", { uid: toUid });
+  }
+
+  function sendTypingStop(toUid: string) {
+    socket.emit("typing-stop", { uid: toUid });
+  }
+
+  return {
+    messages,
+    sendMessage,
+    sendTypingStart,
+    sendTypingStop,
+    typingUsers,
+  };
 }
