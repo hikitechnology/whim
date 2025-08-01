@@ -23,6 +23,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import useMessaging from "@/hooks/useMessaging";
 import { MESSAGE_SPLIT_TIME_MS } from "@/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import TypingIndicator from "@/components/Chat/TypingIndicator";
 
 // TODO: animate bottom sheet border radius when < 100%
 
@@ -31,11 +32,19 @@ const CHAT_HANDLE_HEIGHT = 24;
 export default function ChatPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isPending, isError } = useBasicProfileQuery(id);
-  const { messages, sendMessage } = useMessaging();
+  const { messages, sendMessage, typingUsers, sendTypingStart } =
+    useMessaging();
   const insets = useSafeAreaInsets();
 
   const [message, setMessage] = useState<string>("");
   const listRef = useRef<BottomSheetFlatListMethods | null>(null);
+  const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  function handleChangeText(newText: string) {
+    setMessage(newText);
+    sendTypingStart(id);
+  }
 
   function send() {
     // if timeout isn't used, and the last word gets autocorrected, it'll replace the empty string upon sending.
@@ -51,9 +60,6 @@ export default function ChatPage() {
       }
     });
   }
-
-  const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
-  const [isScrolling, setIsScrolling] = useState(false);
 
   if (isPending) return <Text>Loading profile</Text>;
   if (isError) return <Text>Error while loading profile</Text>;
@@ -113,16 +119,24 @@ export default function ChatPage() {
                 );
               }}
               ref={listRef}
-              onContentSizeChange={() =>
-                listRef.current?.scrollToEnd({ animated: true })
-              }
+              onContentSizeChange={() => {
+                if (!isScrolling) {
+                  setTimeout(() => {
+                    listRef.current?.scrollToEnd({ animated: true });
+                  });
+                }
+              }}
               onLayout={() => {
                 if (isScrolledToBottom && !isScrolling) {
                   listRef.current?.scrollToEnd({ animated: false });
                 }
               }}
               contentContainerStyle={styles.messages}
-              ListFooterComponent={<View style={{ height: 6 }} />}
+              ListFooterComponent={
+                <View style={{ minHeight: 6 }}>
+                  {typingUsers.includes(id) && <TypingIndicator />}
+                </View>
+              }
               onMomentumScrollBegin={() => setIsScrolling(true)}
               onMomentumScrollEnd={() => setIsScrolling(false)}
               // @ts-ignore-error incorrect type definition https://github.com/gorhom/react-native-bottom-sheet/pull/1019
@@ -156,10 +170,10 @@ export default function ChatPage() {
                     multiline
                     style={{ height: "auto", maxHeight: 150 }}
                     value={message}
-                    onChangeText={setMessage}
+                    onChangeText={handleChangeText}
                   />
                 </View>
-                <TouchableOpacity onPress={send} disabled={false}>
+                <TouchableOpacity onPress={send}>
                   <LinearGradient
                     colors={["#fbbf2477", "#f9731677"]}
                     start={{ x: 0, y: 0.75 }}
