@@ -92,7 +92,7 @@ function RootNavigator() {
         }}
       >
         <Stack.Protected guard={hasCompletedOnboarding && user !== null}>
-          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(main)" />
         </Stack.Protected>
         <Stack.Protected guard={hasCompletedOnboarding && user === null}>
           <Stack.Screen name="login" />
