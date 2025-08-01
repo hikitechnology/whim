@@ -22,15 +22,17 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 import useMessaging from "@/hooks/useMessaging";
 import { MESSAGE_SPLIT_TIME_MS } from "@/constants";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // TODO: animate bottom sheet border radius when < 100%
 
 const CHAT_HANDLE_HEIGHT = 24;
 
-export default function Chat() {
+export default function ChatPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isPending, isError } = useBasicProfileQuery(id);
   const { messages, sendMessage } = useMessaging();
+  const insets = useSafeAreaInsets();
 
   const [message, setMessage] = useState<string>("");
   const listRef = useRef<BottomSheetFlatListMethods | null>(null);
@@ -136,9 +138,16 @@ export default function Chat() {
             />
             <KeyboardAvoidingView
               behavior="padding"
-              keyboardVerticalOffset={CHAT_HEADER_HEIGHT + CHAT_HANDLE_HEIGHT}
+              keyboardVerticalOffset={
+                CHAT_HEADER_HEIGHT + CHAT_HANDLE_HEIGHT - insets.bottom
+              }
             >
-              <View style={styles.messageBar}>
+              <View
+                style={[
+                  styles.messageBar,
+                  { paddingBottom: insets.bottom + styles.messageBar.padding },
+                ]}
+              >
                 <View style={{ flex: 1 }}>
                   <TextInput
                     placeholder="Type a message..."
