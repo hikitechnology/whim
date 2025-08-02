@@ -209,7 +209,6 @@ const styles = StyleSheet.create({
   },
   messages: {
     paddingHorizontal: 16,
-    paddingTop: 6,
   },
   messageBar: {
     flexDirection: "row",

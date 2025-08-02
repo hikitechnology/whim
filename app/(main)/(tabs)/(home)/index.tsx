@@ -14,6 +14,7 @@ import useAuthContext from "@/hooks/useAuthContext";
 import { useEffect } from "react";
 import { metersToFeet } from "@/utils/location";
 import { useConnectionState } from "@/hooks/useConnections";
+import toDateOrTimeString from "@/utils/date";
 
 export default function Index() {
   const { user } = useAuthContext();
@@ -42,9 +43,10 @@ export default function Index() {
             pfpId={item.pfpId}
             location={`Near ${item.locationName}`}
             // mutualFriendsCount={item.mutualFriends}
-            time={new Date(item.startTime).toLocaleTimeString([], {
-              timeStyle: "short",
-            })}
+            time={toDateOrTimeString(item.startTime)}
+            // time={new Date(item.startTime).toLocaleTimeString([], {
+            //   timeStyle: "short",
+            // })}
             distance={Math.floor(metersToFeet(item.distance)) + " ft away"}
             timeTogether={
               Math.floor(
