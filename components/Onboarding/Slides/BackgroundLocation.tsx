@@ -28,7 +28,8 @@ export default function BackgroundLocation({ onNext, onSkip }: Props) {
       </Callout>
       <Button
         icon="navigate-outline"
-        variant="purple"
+        color="purple"
+        variant="primary"
         style={{ width: "100%" }}
         onPress={() => {
           Location.requestBackgroundPermissionsAsync().then(onNext);
@@ -36,7 +37,7 @@ export default function BackgroundLocation({ onNext, onSkip }: Props) {
       >
         Enable Background Location
       </Button>
-      <Button variant="textOnly" style={{ width: "100%" }} onPress={onSkip}>
+      <Button color="textOnly" style={{ width: "100%" }} onPress={onSkip}>
         Skip for now
       </Button>
     </Slides.Slide>

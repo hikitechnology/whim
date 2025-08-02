@@ -66,7 +66,7 @@ function RootNavigator() {
             left: 10,
             zIndex: 100,
           }}
-          variant="green"
+          color="green"
           onPress={resetOnboarding}
         >
           reset onboarding
@@ -80,7 +80,7 @@ function RootNavigator() {
             left: 10,
             zIndex: 100,
           }}
-          variant="orange"
+          color="orange"
           onPress={signOut}
         >
           log out

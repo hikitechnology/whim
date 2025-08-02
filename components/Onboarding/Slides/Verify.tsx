@@ -55,14 +55,15 @@ export default function Verify({ numberToShow, onNext }: Props) {
       ) : null}
       <Button
         icon="arrow-forward-outline"
-        variant="green"
+        color="green"
+        variant="primary"
         style={{ width: "100%" }}
         onPress={attemptSubmitCode}
         disabled={continueDisabled}
       >
         Verify & Continue
       </Button>
-      <Button variant="textOnly" style={{ width: "100%" }}>
+      <Button color="textOnly" style={{ width: "100%" }}>
         Didn&apos;t receive a code? Resend
       </Button>
     </Slides.Slide>

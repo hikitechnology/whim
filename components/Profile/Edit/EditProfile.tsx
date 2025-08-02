@@ -210,7 +210,8 @@ function EditProfile({ profile }: Props) {
       </PageBackground>
       <Button
         style={styles.saveButton}
-        variant="green"
+        color="green"
+        variant="primary"
         icon="save-outline"
         onPress={handleSubmit((data) => mutate(data))}
         disabled={isPending}

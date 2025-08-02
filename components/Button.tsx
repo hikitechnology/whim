@@ -1,4 +1,3 @@
-import { PropsWithChildren } from "react";
 import {
   ColorValue,
   StyleSheet,
@@ -9,81 +8,138 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
 
-type Props = PropsWithChildren<{
-  variant?:
-    | "primary"
-    | "secondary"
-    | "textOnly"
-    | "green"
-    | "blue"
-    | "orange"
-    | "purple";
+type Props = {
+  color?: "default" | "textOnly" | "green" | "blue" | "orange" | "purple";
+  variant?: "primary" | "secondary";
   icon?: keyof typeof Ionicons.glyphMap;
   onPress?: () => void;
   style?: ViewStyle;
   disabled?: boolean;
-}>;
+  children?: string;
+};
+
+type ButtonVariant = (
+  | {
+      bgType: "gradient";
+      bgColor: [ColorValue, ColorValue, ...ColorValue[]];
+    }
+  | {
+      bgType: "solid";
+      bgColor: ColorValue;
+    }
+  | {
+      bgType: "none";
+    }
+) & {
+  textColor: ColorValue;
+  borderColor?: ColorValue;
+};
+
+type ButtonStyle = {
+  primary: ButtonVariant;
+  secondary: ButtonVariant;
+};
+
+const buttonStyles: Record<NonNullable<Props["color"]>, ButtonStyle> = {
+  default: {
+    primary: {
+      bgType: "gradient",
+      bgColor: ["#f43f5e", "#db2777"],
+      textColor: "#fff",
+    },
+    secondary: {
+      bgType: "solid",
+      bgColor: "#fff",
+      textColor: "#78350f",
+      borderColor: "rgb(252, 211, 77)",
+    },
+  },
+  textOnly: {
+    primary: {
+      bgType: "none",
+      textColor: "#6b7280",
+    },
+    secondary: {
+      bgType: "none",
+      textColor: "#6b7280",
+    },
+  },
+  green: {
+    primary: {
+      bgType: "gradient",
+      bgColor: ["#10b981", "#16a34a"],
+      textColor: "#fff",
+    },
+    secondary: {
+      bgType: "solid",
+      bgColor: "#f0fdf4",
+      textColor: "#166534",
+      borderColor: "#bbf7d0",
+    },
+  },
+  blue: {
+    primary: {
+      bgType: "gradient",
+      bgColor: ["#3b82f6", "#6366f1"],
+      textColor: "#fff",
+    },
+    secondary: {
+      bgType: "solid",
+      bgColor: "#eff6ff",
+      textColor: "#1e40af",
+      borderColor: "#bfdbfe",
+    },
+  },
+  orange: {
+    primary: {
+      bgType: "gradient",
+      bgColor: ["#fbbf24", "#f97316"],
+      textColor: "#fff",
+    },
+    secondary: {
+      bgType: "solid",
+      bgColor: "#fff7ed",
+      textColor: "#9a3412",
+      borderColor: "#fed7aa",
+    },
+  },
+  purple: {
+    primary: {
+      bgType: "gradient",
+      bgColor: ["#7c3aed", "#9333ea"],
+      textColor: "#fff",
+    },
+    secondary: {
+      bgType: "solid",
+      bgColor: "#faf5ff",
+      textColor: "#6b21a8",
+      borderColor: "#e9d5ff",
+    },
+  },
+};
 
 export default function Button({
-  style,
+  color = "default",
   variant = "secondary",
   icon,
   children,
   disabled,
+  style,
   onPress,
 }: Props) {
-  let variantStyles;
-  if (
-    variant === "primary" ||
-    variant === "green" ||
-    variant === "blue" ||
-    variant === "orange" ||
-    variant === "purple"
-  ) {
-    variantStyles = StyleSheet.create({
-      container: {},
-      text: {
-        color: "#fff",
-      },
-    });
-  } else if (variant === "secondary") {
-    variantStyles = StyleSheet.create({
-      container: {
-        borderColor: "rgb(252, 211, 77)",
-        borderWidth: 2,
-        backgroundColor: "#fff",
-      },
-      text: {
-        color: "#78350f",
-      },
-    });
-  } else {
-    variantStyles = StyleSheet.create({
-      container: {},
-      text: {
-        color: "#6b7280",
-      },
-    });
-  }
+  const variantConfig = buttonStyles[color][variant];
 
-  let gradientColors: [ColorValue, ColorValue, ...ColorValue[]] | null = null;
-  switch (variant) {
-    case "primary":
-      gradientColors = ["#f43f5e", "#db2777"];
-      break;
-    case "green":
-      gradientColors = ["#10b981", "#16a34a"];
-      break;
-    case "blue":
-      gradientColors = ["#3b82f6", "#6366f1"];
-      break;
-    case "orange":
-      gradientColors = ["#fbbf24", "#f97316"];
-      break;
-    case "purple":
-      gradientColors = ["#c084fc", "#ec4899"];
-      break;
-  }
+  const variantStyles = StyleSheet.create({
+    container: {
+      backgroundColor:
+        variantConfig.bgType === "solid" ? variantConfig.bgColor : undefined,
+      borderWidth: variantConfig.borderColor ? 2 : undefined,
+      borderColor: variantConfig.borderColor,
+    },
+    text: {
+      color: variantConfig.textColor,
+    },
+  });
 
   return (
     <TouchableOpacity
@@ -96,16 +152,16 @@ export default function Button({
       ]}
       disabled={disabled}
     >
-      {gradientColors && (
+      {variantConfig.bgType === "gradient" && (
         <LinearGradient
-          colors={gradientColors}
+          colors={variantConfig.bgColor}
           start={{ x: 0, y: 0.75 }}
           end={{ x: 1, y: 0.25 }}
           style={styles.gradientBg}
         />
       )}
-      {icon && (
-        <Ionicons name={icon} size={18} color={variantStyles.text.color} />
+      {icon !== undefined && (
+        <Ionicons name={icon} size={18} color={variantConfig.textColor} />
       )}
       <Text style={[styles.text, variantStyles.text]}>{children}</Text>
     </TouchableOpacity>

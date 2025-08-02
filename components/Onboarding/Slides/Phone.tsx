@@ -56,7 +56,8 @@ export default function Phone({ onNext, setDisplayNumber }: Props) {
       ) : null}
       <Button
         icon="arrow-forward-outline"
-        variant="blue"
+        color="blue"
+        variant="primary"
         style={{ width: "100%" }}
         onPress={attemptSignIn}
         disabled={continueDisabled}
