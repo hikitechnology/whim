@@ -1,11 +1,11 @@
 import React from "react";
 import UserCardBase from "../UserCard";
 import useBasicProfileQuery from "@/hooks/queries/useBasicProfileQuery";
-import useMessaging from "@/hooks/useMessaging";
 import { Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import toDateOrTimeString from "@/utils/date";
 import { useConnectionState } from "@/hooks/useConnections";
+import useMessagingContext from "@/hooks/useMessagingContext";
 
 type Props = {
   id: string;
@@ -14,7 +14,7 @@ type Props = {
 function UserCard({ id }: Props) {
   const router = useRouter();
   const { data } = useBasicProfileQuery(id);
-  const { getMessagesWith } = useMessaging();
+  const { getMessagesWith } = useMessagingContext();
   const messages = getMessagesWith(id);
   const getConnection = useConnectionState((state) => state.getConnection);
 
