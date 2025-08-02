@@ -20,10 +20,10 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import TextInput from "@/components/TextInput";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
-import useMessaging from "@/hooks/useMessaging";
 import { MESSAGE_SPLIT_TIME_MS } from "@/constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import TypingIndicator from "@/components/Chat/TypingIndicator";
+import useMessagingContext from "@/hooks/useMessagingContext";
 
 // TODO: animate bottom sheet border radius when < 100%
 
@@ -32,13 +32,15 @@ const CHAT_HANDLE_HEIGHT = 24;
 export default function ChatPage() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isPending, isError } = useBasicProfileQuery(id);
-  const { messages, sendMessage, typingUsers, sendTypingStart } =
-    useMessaging();
+  const { getMessagesWith, sendMessage, isTyping, sendTypingStart } =
+    useMessagingContext();
   const insets = useSafeAreaInsets();
 
   const [message, setMessage] = useState<string>("");
   const listRef = useRef<BottomSheetFlatListMethods | null>(null);
   const [isScrolling, setIsScrolling] = useState(false);
+
+  const messages = getMessagesWith(id);
 
   function handleChangeText(newText: string) {
     setMessage(newText);
@@ -54,7 +56,7 @@ export default function ChatPage() {
         setMessage("");
         sendMessage({
           message,
-          receiver: id,
+          to: id,
         });
       }
     });
@@ -140,7 +142,7 @@ export default function ChatPage() {
               contentContainerStyle={styles.messages}
               ListHeaderComponent={
                 <View style={{ paddingBottom: 6 }}>
-                  {typingUsers.includes(id) && <TypingIndicator />}
+                  {isTyping(id) && <TypingIndicator />}
                 </View>
               }
               onMomentumScrollBegin={() => setIsScrolling(true)}

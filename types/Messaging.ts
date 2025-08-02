@@ -1,8 +1,3 @@
-export type ClientMessage = {
-  receiver: string;
-  message: string;
-};
-
 export type ServerMessage = {
   id: number;
   sender: string;
@@ -10,6 +5,12 @@ export type ServerMessage = {
   message: string;
   timestamp: string | number;
   clientId?: string;
+};
+
+export type LocalMessage = Omit<ServerMessage, "id" | "timestamp"> & {
+  timestamp?: string | number;
+  clientId?: string;
+  delivered: boolean;
 };
 
 export type TypingEvent = {

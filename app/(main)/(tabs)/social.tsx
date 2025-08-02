@@ -1,6 +1,6 @@
 import Header, { BASE_SOCIAL_HEADER_HEIGHT } from "@/components/Social/Header";
 import UserCard from "@/components/Social/UserCard";
-import useMessaging from "@/hooks/useMessaging";
+import useMessagingContext from "@/hooks/useMessagingContext";
 import {
   FlatList,
   NativeScrollEvent,
@@ -11,7 +11,7 @@ import { useSharedValue } from "react-native-reanimated";
 
 export default function SocialPage() {
   const scrollOffset = useSharedValue(0);
-  const { getCorrespondents } = useMessaging();
+  const { getCorrespondents } = useMessagingContext();
 
   const conversationTargets = getCorrespondents();
 
