@@ -53,7 +53,8 @@ function Profile({ onNext }: Props) {
       />
       <Button
         icon="arrow-forward-outline"
-        variant="purple"
+        color="purple"
+        variant="primary"
         style={{ width: "100%" }}
         onPress={updateProfileAndContinue}
         disabled={nextDisabled}

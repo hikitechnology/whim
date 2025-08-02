@@ -25,7 +25,8 @@ export default function BackgroundReminder({ onNext }: Props) {
       </Callout>
       <Button
         icon="sparkles-outline"
-        variant="green"
+        color="green"
+        variant="primary"
         style={{ width: "100%" }}
         onPress={onNext}
       >

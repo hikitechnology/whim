@@ -29,7 +29,8 @@ export default function ForegroundLocation({ onNext }: Props) {
       </Callout>
       <Button
         icon="location-outline"
-        variant="orange"
+        color="orange"
+        variant="primary"
         style={{ width: "100%" }}
         onPress={() => {
           Location.requestForegroundPermissionsAsync().then(onNext);

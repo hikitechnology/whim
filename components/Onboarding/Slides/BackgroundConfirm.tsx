@@ -29,7 +29,8 @@ export default function BackgroundConfirm({ onNext, onSkip }: Props) {
       </Callout>
       <Button
         icon="heart-outline"
-        variant="purple"
+        color="purple"
+        variant="primary"
         style={{ width: "100%" }}
         onPress={() => {
           Location.requestBackgroundPermissionsAsync().then(onNext);
@@ -37,7 +38,7 @@ export default function BackgroundConfirm({ onNext, onSkip }: Props) {
       >
         Actually, let&apos;s enable it!
       </Button>
-      <Button variant="textOnly" style={{ width: "100%" }} onPress={onSkip}>
+      <Button color="textOnly" style={{ width: "100%" }} onPress={onSkip}>
         Continue without it
       </Button>
     </Slides.Slide>
