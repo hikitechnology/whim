@@ -1,5 +1,6 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { LinearGradient } from "expo-linear-gradient";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, {
   FadeIn,
@@ -16,7 +17,7 @@ type Props = {
   text: string;
 };
 
-export default function Message({
+function Message({
   isDelivered = true,
   indicator = "none",
   isOutgoing = false,
@@ -117,3 +118,5 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
 });
+
+export default React.memo(Message);

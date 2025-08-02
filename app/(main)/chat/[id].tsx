@@ -38,7 +38,6 @@ export default function ChatPage() {
 
   const [message, setMessage] = useState<string>("");
   const listRef = useRef<BottomSheetFlatListMethods | null>(null);
-  const [isScrolledToBottom, setIsScrolledToBottom] = useState(true);
   const [isScrolling, setIsScrolling] = useState(false);
 
   function handleChangeText(newText: string) {
@@ -82,7 +81,7 @@ export default function ChatPage() {
         <View style={{ flex: 1 }}>
           <MapView style={{ flex: 1 }} />
           <BottomSheet
-            snapPoints={["15%", "100%"]}
+            snapPoints={["20%", "100%"]}
             enableDynamicSizing={false}
             index={1}
             animateOnMount={false}
@@ -98,7 +97,7 @@ export default function ChatPage() {
             <BottomSheetFlatList
               data={messages}
               renderItem={({ item, index }) => {
-                const nextMessage = messages[index + 1];
+                const nextMessage = messages[index - 1];
 
                 const currentTimestamp = item.timestamp
                   ? new Date(item.timestamp).getTime()
@@ -131,33 +130,29 @@ export default function ChatPage() {
               onContentSizeChange={() => {
                 if (!isScrolling) {
                   setTimeout(() => {
-                    listRef.current?.scrollToEnd({ animated: true });
+                    listRef.current?.scrollToOffset({
+                      offset: 0,
+                      animated: true,
+                    });
                   });
                 }
               }}
-              onLayout={() => {
-                if (isScrolledToBottom && !isScrolling) {
-                  listRef.current?.scrollToEnd({ animated: false });
-                }
-              }}
               contentContainerStyle={styles.messages}
-              ListFooterComponent={
+              ListHeaderComponent={
                 <View style={{ paddingBottom: 6 }}>
                   {typingUsers.includes(id) && <TypingIndicator />}
                 </View>
               }
               onMomentumScrollBegin={() => setIsScrolling(true)}
               onMomentumScrollEnd={() => setIsScrolling(false)}
-              // @ts-ignore-error incorrect type definition https://github.com/gorhom/react-native-bottom-sheet/pull/1019
-              onScroll={({ nativeEvent }) => {
-                const viewportHeight = nativeEvent.layoutMeasurement.height;
-                const contentOffset = nativeEvent.contentOffset.y;
-                const contentHeight = nativeEvent.contentSize.height;
-
-                setIsScrolledToBottom(
-                  viewportHeight + contentOffset + 50 >= contentHeight,
-                );
+              maintainVisibleContentPosition={{
+                minIndexForVisible: 0,
               }}
+              inverted
+              // workaround for https://github.com/gorhom/react-native-bottom-sheet/issues/512
+              onRefresh={() => {}}
+              refreshing={false}
+              refreshControl={<></>}
             />
             <KeyboardAvoidingView
               behavior="padding"

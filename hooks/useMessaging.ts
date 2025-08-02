@@ -9,6 +9,9 @@ import { io } from "socket.io-client";
 import useAuthenticatedUser from "./useAuthenticatedUser";
 import { getIdToken } from "@react-native-firebase/auth";
 import simpleId from "@/utils/simpleId";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 const socket = io(process.env.EXPO_PUBLIC_SOCKET_URL, {
   autoConnect: false,
@@ -20,8 +23,42 @@ type StateMessage = Omit<ServerMessage, "id" | "timestamp"> & {
   delivered: boolean;
 };
 
+type MessagingState = {
+  messages: StateMessage[];
+  setMessages: (
+    messages:
+      | StateMessage[]
+      | ((prevMessages: StateMessage[]) => StateMessage[]),
+  ) => void;
+};
+
+const useMessagingState = create(
+  persist<MessagingState>(
+    (set) => ({
+      messages: [],
+      setMessages: (messages) => {
+        if (messages instanceof Function) {
+          set((state) => ({
+            ...state,
+            messages: messages(state.messages),
+          }));
+        } else {
+          set((state) => ({
+            ...state,
+            messages,
+          }));
+        }
+      },
+    }),
+    {
+      name: "messaging-state",
+      storage: createJSONStorage(() => AsyncStorage),
+    },
+  ),
+);
+
 export default function useMessaging() {
-  const [messages, setMessages] = useState<StateMessage[]>([]);
+  const { messages, setMessages } = useMessagingState();
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const user = useAuthenticatedUser();
 
@@ -31,11 +68,11 @@ export default function useMessaging() {
       socket.connect();
       socket.on("message", (message: ServerMessage) => {
         setMessages((prev) => [
-          ...prev,
           {
             ...message,
             delivered: true,
           },
+          ...prev,
         ]);
         setTypingUsers((prev) =>
           prev.includes(message.sender)
@@ -66,7 +103,7 @@ export default function useMessaging() {
       socket.removeAllListeners();
       socket.disconnect();
     };
-  }, [user]);
+  }, [user, setMessages]);
 
   function sendMessage(message: ClientMessage) {
     const newMessage = {
@@ -75,7 +112,7 @@ export default function useMessaging() {
       clientId: simpleId(),
       delivered: false,
     };
-    setMessages((prev) => [...prev, newMessage]);
+    setMessages((prev) => [newMessage, ...prev]);
     socket.emit("message", newMessage);
   }
 
