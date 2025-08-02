@@ -124,11 +124,27 @@ export default function useMessaging() {
     socket.emit("typing-stop", { uid: toUid });
   }
 
+  function getMessagesWith(uid: string) {
+    return messages.filter((msg) => msg.sender === uid || msg.receiver === uid);
+  }
+
+  function getCorrespondents() {
+    return [
+      ...new Set(
+        messages.map((msg) =>
+          msg.sender !== user.uid ? msg.sender : msg.receiver,
+        ),
+      ),
+    ];
+  }
+
   return {
     messages,
     sendMessage,
     sendTypingStart,
     sendTypingStop,
     typingUsers,
+    getMessagesWith,
+    getCorrespondents,
   };
 }
