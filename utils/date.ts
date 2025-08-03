@@ -7,7 +7,7 @@ export default function toDateOrTimeString(
   } else {
     return date.toLocaleString([], {
       year: "numeric",
-      month: "long",
+      month: "numeric",
       day: "numeric",
     });
   }
