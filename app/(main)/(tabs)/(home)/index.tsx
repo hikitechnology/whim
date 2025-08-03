@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { metersToFeet } from "@/utils/location";
 import { useConnectionState } from "@/hooks/useConnections";
 import toDateOrTimeString from "@/utils/date";
+import Footer from "@/components/Home/Footer";
 
 export default function Index() {
   const { user } = useAuthContext();
@@ -44,9 +45,6 @@ export default function Index() {
             location={`Near ${item.locationName}`}
             // mutualFriendsCount={item.mutualFriends}
             time={toDateOrTimeString(item.startTime)}
-            // time={new Date(item.startTime).toLocaleTimeString([], {
-            //   timeStyle: "short",
-            // })}
             distance={Math.floor(metersToFeet(item.distance)) + " ft away"}
             timeTogether={
               Math.floor(
@@ -61,6 +59,7 @@ export default function Index() {
         style={styles.scrollContainer}
         contentContainerStyle={styles.profileList}
         onScroll={onScroll}
+        ListFooterComponent={<Footer hasConnections={connections.length > 0} />}
       />
     </View>
   );
