@@ -34,7 +34,7 @@ function Header({ scrollOffset }: Props) {
       </View>
       <View style={styles.filters}>
         <Button
-          style={{ flex: 1 }}
+          style={styles.filterButton}
           color="orange"
           variant={selectedTab === "all" ? "primary" : "secondary"}
           onPress={() => setSelectedTab("all")}
@@ -42,7 +42,7 @@ function Header({ scrollOffset }: Props) {
           All (6)
         </Button>
         <Button
-          style={{ flex: 1 }}
+          style={styles.filterButton}
           color="purple"
           variant={selectedTab === "friends" ? "primary" : "secondary"}
           onPress={() => setSelectedTab("friends")}
@@ -50,7 +50,7 @@ function Header({ scrollOffset }: Props) {
           Friends (2)
         </Button>
         <Button
-          style={{ flex: 1 }}
+          style={styles.filterButton}
           color="blue"
           variant={selectedTab === "new" ? "primary" : "secondary"}
           onPress={() => setSelectedTab("new")}
@@ -97,6 +97,9 @@ const styles = StyleSheet.create({
   filters: {
     flexDirection: "row",
     gap: 6,
+  },
+  filterButton: {
+    flex: 1,
   },
 });
 
