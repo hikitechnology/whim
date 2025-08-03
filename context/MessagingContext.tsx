@@ -39,6 +39,7 @@ export default function MessagingProvider({ children }: ProviderProps) {
 
   useEffect(() => {
     getIdToken(user, true).then((token) => {
+      socket.removeAllListeners();
       socket.auth = { token };
       socket.connect();
       socket.on("message", (message: ServerMessage) => {
