@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import UserCardBase from "../UserCard/index";
 import Button from "../Button";
 import React from "react";
@@ -35,7 +35,7 @@ function UserCard(props: Props) {
         ) : null}
         {props.location ? (
           <UserCardBase.Subtext icon="location-outline">
-            {props.location}
+            Met near <Text style={styles.bold}>{props.location}</Text>
           </UserCardBase.Subtext>
         ) : null}
         <UserCardBase.StatsRow>
@@ -65,7 +65,14 @@ function UserCard(props: Props) {
             variant="primary"
             icon="qr-code-outline"
             style={{ flex: 1 }}
-            onPress={() => router.navigate("/friend")}
+            onPress={() =>
+              router.navigate({
+                pathname: "/friend",
+                params: {
+                  name: props.name,
+                },
+              })
+            }
           >
             Add friend
           </Button>
@@ -87,6 +94,9 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: "row",
     gap: 10,
+  },
+  bold: {
+    fontWeight: "500",
   },
 });
 

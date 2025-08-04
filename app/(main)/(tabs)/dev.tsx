@@ -15,6 +15,7 @@ import { syncLocation } from "@/utils/api";
 import { LocalLocationUpdate } from "@/types/Location";
 import { useReverseGeocoder } from "@/hooks/useReverseGeocoder";
 import { useConnectionState } from "@/hooks/useConnections";
+import useMessagingContext from "@/hooks/useMessagingContext";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -59,6 +60,7 @@ export default function LocationPage() {
     useConnectionState();
 
   const { resetLocationCache } = useReverseGeocoder();
+  const { resetMessages } = useMessagingContext();
 
   async function requestPermission() {
     const { status } = await Location.requestBackgroundPermissionsAsync();
@@ -89,6 +91,7 @@ export default function LocationPage() {
       <Button title="Disable location tracking" onPress={disableTracking} />
       <Button title="Reset connections" onPress={resetConnections} />
       <Button title="Reset location cache" onPress={resetLocationCache} />
+      <Button title="Reset messages" onPress={resetMessages} />
       <View style={styles.nearbyList}>
         {connections.map((connection) => (
           <View

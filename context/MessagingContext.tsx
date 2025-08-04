@@ -22,6 +22,7 @@ export type MessagingContextType = {
   sendTypingStart: (recipient: string) => void;
   sendTypingStop: (recipient: string) => void;
   isTyping: (uid: string) => boolean;
+  resetMessages: () => void;
 };
 
 export const MessagingContext = createContext<MessagingContextType | null>(
@@ -119,6 +120,10 @@ export default function MessagingProvider({ children }: ProviderProps) {
     return typingUsers.includes(uid);
   }
 
+  function resetMessages() {
+    setMessages([]);
+  }
+
   return (
     <MessagingContext.Provider
       value={{
@@ -128,6 +133,7 @@ export default function MessagingProvider({ children }: ProviderProps) {
         sendTypingStart,
         sendTypingStop,
         isTyping,
+        resetMessages,
       }}
     >
       {children}
