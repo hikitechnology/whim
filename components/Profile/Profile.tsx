@@ -49,10 +49,11 @@ export default function Profile({ profile, editPagePath }: Props) {
           <View style={styles.interactions}>
             <Button
               variant="primary"
-              icon="hand-left-outline"
+              icon="qr-code-outline"
               style={{ flex: 1 }}
+              onPress={() => router.navigate("/friend")}
             >
-              Wave
+              Add friend
             </Button>
             <Button
               icon="chatbubble-outline"
