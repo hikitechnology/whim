@@ -51,7 +51,8 @@
           "enableBackgroundRemoteNotifications": true
         }
       ],
-      "expo-image-picker"
+      "expo-image-picker",
+      "expo-camera"
     ],
     "experiments": {
       "typedRoutes": true

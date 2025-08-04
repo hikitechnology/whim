@@ -40,7 +40,7 @@ export default function Profile({ profile, editPagePath }: Props) {
               iconColor="#d97706"
               style={styles.location}
             >
-              Met near {metAt}
+              Met near <Text style={styles.bold}>{metAt}</Text>
             </IconText>
           ) : null}
           <Text style={styles.bio}>{profile.bio}</Text>
@@ -51,7 +51,14 @@ export default function Profile({ profile, editPagePath }: Props) {
               variant="primary"
               icon="qr-code-outline"
               style={{ flex: 1 }}
-              onPress={() => router.navigate("/friend")}
+              onPress={() =>
+                router.navigate({
+                  pathname: "/friend",
+                  params: {
+                    name: profile.name,
+                  },
+                })
+              }
             >
               Add friend
             </Button>
@@ -222,8 +229,10 @@ const styles = StyleSheet.create({
   },
   location: {
     fontSize: 18,
-    fontWeight: 500,
     color: "#374151",
+  },
+  bold: {
+    fontWeight: 500,
   },
   bio: {
     fontSize: 18,

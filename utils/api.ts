@@ -87,3 +87,11 @@ export async function uploadImages(
 
   return response.json();
 }
+
+export async function getFriendCode(): Promise<number> {
+  const response = await apiFetch("/friend/code");
+  if (!response.ok) {
+    throw new Error("Friend code response was not OK");
+  }
+  return response.json();
+}

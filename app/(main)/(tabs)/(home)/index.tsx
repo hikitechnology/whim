@@ -42,7 +42,7 @@ export default function Index() {
           <UserCard
             name={item.name}
             pfpId={item.pfpId}
-            location={`Near ${item.locationName}`}
+            location={item.locationName}
             // mutualFriendsCount={item.mutualFriends}
             time={toDateOrTimeString(item.startTime)}
             distance={Math.floor(metersToFeet(item.distance)) + " ft away"}
