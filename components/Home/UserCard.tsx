@@ -45,7 +45,7 @@ function UserCard(props: Props) {
             </UserCardBase.StatItem>
           ) : null}
           {props.distance ? (
-            <UserCardBase.StatItem icon="location-outline">
+            <UserCardBase.StatItem icon="compass-outline">
               {props.distance}
             </UserCardBase.StatItem>
           ) : null}
@@ -63,10 +63,11 @@ function UserCard(props: Props) {
         <View style={styles.actions}>
           <Button
             variant="primary"
-            icon="hand-left-outline"
+            icon="qr-code-outline"
             style={{ flex: 1 }}
+            onPress={() => router.navigate("/friend")}
           >
-            Wave
+            Add friend
           </Button>
           <Button
             variant="secondary"
