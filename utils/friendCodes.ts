@@ -3,7 +3,8 @@ export function generateScannableCode(friendCode: number) {
   return timeSecs + friendCode;
 }
 
-export function decodeScannedCode(code: number) {
+export function decodeScannedCode(code: number | string) {
+  const numericCode = typeof code === "number" ? code : Number(code);
   const timeSecs = Math.floor(Date.now() / 1000);
-  return code - timeSecs;
+  return numericCode - timeSecs;
 }

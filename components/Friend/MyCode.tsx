@@ -1,9 +1,9 @@
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-import Card from "../Card";
 import { useEffect, useState } from "react";
 import useFriendCodeQuery from "@/hooks/queries/useFriendCodeQuery";
 import { generateScannableCode } from "@/utils/friendCodes";
+import Slides from "../Slides";
 
 const QR_SIZE = 225;
 
@@ -30,7 +30,7 @@ export default function MyCode({ name }: Props) {
   }, [data]);
 
   return (
-    <Card innerStyle={styles.codeContainer}>
+    <Slides.Slide>
       <Text style={styles.codeLabel}>Your Friend Code</Text>
       <View style={styles.innerCodeContainer}>
         {code !== null ? (
@@ -39,30 +39,17 @@ export default function MyCode({ name }: Props) {
           <ActivityIndicator />
         )}
       </View>
-      <View>
-        {!!name && (
-          <Text style={styles.hint}>
-            Have <Text style={styles.bold}>{name}</Text> scan this code to add
-            you as a friend!
-          </Text>
-        )}
-      </View>
-    </Card>
+      {!!name && (
+        <Text style={styles.hint}>
+          Have <Text style={styles.bold}>{name}</Text> scan this code to add you
+          as a friend!
+        </Text>
+      )}
+    </Slides.Slide>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    backgroundColor: "#fffbeb",
-    padding: 24,
-    flex: 1,
-    gap: 24,
-  },
-  codeContainer: {
-    alignItems: "center",
-    padding: 16,
-    gap: 16,
-  },
   codeLabel: {
     fontSize: 20,
     fontWeight: "bold",
