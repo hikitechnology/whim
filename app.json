@@ -1,5 +1,5 @@
 {
-  "expo": {
+  "expo": {   
     "name": "Whim",
     "owner": "whim-inc",
     "slug": "whim",
@@ -34,6 +34,7 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location",
           "isIosBackgroundLocationEnabled": true
+          
         }
       ],
       "@react-native-firebase/app",
