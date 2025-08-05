@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: "center",
     gap: 6,
-    marginHorizontal: 10,
+    marginHorizontal: 6,
   },
   topText: {
     color: "#b45309",
