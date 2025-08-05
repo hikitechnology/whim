@@ -12,7 +12,7 @@ type Props = {
 export default function Scan({ name }: Props) {
   return (
     <Slides.Slide>
-      <Text style={styles.codeLabel}>Your Friend Code</Text>
+      <Text style={styles.codeLabel}>Scan Friend Code</Text>
       <View style={styles.innerCodeContainer}>
         <CameraView
           style={{ width: CAMERA_SIZE, height: CAMERA_SIZE }}
@@ -25,11 +25,6 @@ export default function Scan({ name }: Props) {
             console.log("decode result", decodeScannedCode(result.data));
           }}
         />
-        {/* {code !== null ? ( */}
-        {/*   <QRCode value={code.toString()} size={QR_SIZE} /> */}
-        {/* ) : ( */}
-        {/*   <ActivityIndicator /> */}
-        {/* )} */}
       </View>
       {!!name && (
         <Text style={styles.hint}>

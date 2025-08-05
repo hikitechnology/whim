@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Whim",
+    "owner": "whim-inc",
     "slug": "whim",
     "version": "1.0.0",
     "orientation": "portrait",
