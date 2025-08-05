@@ -32,12 +32,11 @@ export default function FriendPage() {
         }}
         initialSlide="code"
       />
-      {/* <MyCode name={name} /> */}
       <View style={styles.buttonContainer}>
         <Button
           color="blue"
           variant="primary"
-          icon="scan-outline"
+          icon={showingCode ? "scan-outline" : "qr-code-outline"}
           onPress={() => {
             if (setSlideFnRef.current) {
               setSlideFnRef.current(showingCode ? "scan" : "code");
