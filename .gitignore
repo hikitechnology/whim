@@ -38,4 +38,4 @@ yarn-error.*
 
 app-example
 .env
-GoogleService-Info.plist
+GoogleService_Info.plist
